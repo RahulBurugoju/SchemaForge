@@ -1,9 +1,21 @@
-import React from 'react'
+import { Outlet, Link } from "react-router-dom";
 
 function RootLayout() {
   return (
-    <div>RootLayout</div>
-  )
+    <>
+      <nav className="flex gap-4 p-4 border-b">
+        <Link to="/">Home</Link>
+        <Link to="/login">Login</Link>
+        <Link to="/register">Register</Link>
+        <Link to="/dashboard">Dashboard</Link>
+        <Link to="/workspace">Workspace</Link>
+        <Link to="/export">Export</Link>
+        <Link to="/settings">Settings</Link>
+      </nav>
+
+      <Outlet />
+    </>
+  );
 }
 
-export default RootLayout
+export default RootLayout;

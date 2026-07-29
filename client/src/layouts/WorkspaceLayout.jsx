@@ -1,8 +1,10 @@
-import React from 'react'
+import { Outlet } from 'react-router-dom'
 
 function WorkspaceLayout() {
   return (
-    <div>WorkspaceLayout</div>
+    <div>
+      <Outlet/>
+    </div>
   )
 }
 
