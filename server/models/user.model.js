@@ -38,18 +38,17 @@ const userSchema = new mongoose.Schema({
 }, { timestamps: true })
 
 
-userSchema.pre("save", async function (next) {
+userSchema.pre("save", async function () {
 
-    if (!this.isModified("password")) return next();
+    if (!this.isModified("password")) return ;
     this.password = await bcrypt.hash(this.password, 10);
-    next()
 })
 
 userSchema.methods.isPasswordCorrect = async function (password) {
     return bcrypt.compare(password, this.password)
 }
 
-userSchema.methods.generateAccessToken = async function () {
+userSchema.methods.generateAccessToken =  function () {
     const payload = {
         _id: this._id,
         userName: this.userName,
@@ -65,7 +64,7 @@ userSchema.methods.generateAccessToken = async function () {
     return accessToken
 }
 
-userSchema.methods.generateRefreshToken = async function () {
+userSchema.methods.generateRefreshToken =  function () {
     const payload = {
         _id: this._id,
     }

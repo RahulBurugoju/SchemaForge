@@ -9,6 +9,7 @@ import SettingsPage from '../pages/SettingsPage.jsx'
 import NotFoundPage from '../pages/NotFoundPage.jsx'
 import RootLayout from '../layouts/RootLayout.jsx'
 
+
 const router = createBrowserRouter([
   {
     path: "/",
