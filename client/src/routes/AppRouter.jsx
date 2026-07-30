@@ -1,4 +1,4 @@
-import {createBrowserRouter,RouterProvider} from "react-router-dom"
+import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import LandingPage from '../pages/LandingPage.jsx'
 import RegisterPage from '../pages/RegisterPage.jsx'
 import DashboardPage from '../pages/DashboardPage.jsx'
@@ -6,14 +6,10 @@ import LoginPage from '../pages/LoginPage.jsx'
 import WorkspacePage from '../pages/WorkspacePage.jsx'
 import ExportPage from '../pages/ExportPage.jsx'
 import SettingsPage from '../pages/SettingsPage.jsx'
+import NotFoundPage from '../pages/NotFoundPage.jsx'
 import RootLayout from '../layouts/RootLayout.jsx'
 
-
-
-
-function AppRouter() {
-
- const router = createBrowserRouter([
+const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
@@ -46,9 +42,15 @@ function AppRouter() {
         path: "settings",
         element: <SettingsPage />,
       },
+      {
+        path: "*",
+        element: <NotFoundPage />,
+      },
     ],
   },
 ]);
+
+function AppRouter() {
   return (
     <RouterProvider router={router}/>
   )
