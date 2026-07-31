@@ -1,4 +1,4 @@
-import { registerUserService, loginUserService, refreshAccessTokenService,logoutService } from "../services/auth.service.js";
+import { registerUserService, loginUserService, refreshAccessTokenService,logoutService,getCurrentUserService } from "../services/auth.service.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
@@ -50,7 +50,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         .json(
             new ApiResponse(
                 200,
-                { "access token": accessToken, "refresh token": refreshToken },
+                { "accesstoken": accessToken, "refreshtoken": refreshToken },
                 "Access token refreshed successfully"
             )
         );
@@ -75,4 +75,14 @@ const logoutUser = asyncHandler(async (req, res) => {
         );
 });
 
-export { registerUser, loginUser, refreshAccessToken, logoutUser };
+const getCurrentUser = asyncHandler ( async(req,res)=>{
+    const userId = req.user?._id;
+    const response = await getCurrentUserService(userId)
+
+    return res.status(200)
+                .json(
+                    new ApiResponse(200,response,"Fetched current user Successfully")
+                )
+})
+
+export { registerUser, loginUser, refreshAccessToken, logoutUser ,getCurrentUser};

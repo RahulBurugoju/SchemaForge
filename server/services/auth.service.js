@@ -124,12 +124,27 @@ const logoutService = async (userId) => {
     return true;
 };
 
+const getCurrentUserService = async (userId)=>{
+        if(!isValidObjectId(userId)){
+            throw new ApiError(400,"Invalid user id")
+        }
+
+        const user = await User.findById(userId).select("-password -refreshToken")
+
+        if(!user){
+            throw new ApiError(404,"User not found")
+        }
+
+        return user;
+}
+
 export {
     generateAccessAndRefreshTokens,
     registerUserService,
     loginUserService,
     refreshAccessTokenService,
-    logoutService
+    logoutService,
+    getCurrentUserService
 };
 
 
