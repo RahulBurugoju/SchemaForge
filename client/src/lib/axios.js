@@ -1,6 +1,4 @@
 import axios from "axios"
-import store from '../app/store.js'
-import { clearAuth } from "../features/auth"
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
@@ -39,6 +37,8 @@ api.interceptors.response.use(
 
                 return api(originalRequest);
             } catch (refreshError) {
+                const { default: store } = await import("../app/store.js");
+                const { clearAuth } = await import("../features/auth/authSlice.js");
                 store.dispatch(clearAuth());
 
                 window.location.href = "/login";

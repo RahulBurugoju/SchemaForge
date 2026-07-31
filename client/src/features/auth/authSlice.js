@@ -14,40 +14,40 @@ const authSlice = createSlice({
     name: "auth",
     initialState,
     reducers: {
-        clearAuth:(state)=>{
-            state.user=null,
-            state.isAuthenticated=false,
-            state.loading=false,
-            state.initializing=false,
-            state.error=null,
-            state.tokens=null,
+        clearAuth: (state) => {
+            state.user = null;
+            state.isAuthenticated = false;
+            state.loading = false;
+            state.initializing = false;
+            state.error = null;
+            state.tokens = null;
         },
     },
     extraReducers: (builder) => {
         builder
         //----------------------------Register------------------------------
             .addCase(registerUser.pending, (state) => {
-                state.loading = true,
-                    state.error = null
+                state.loading = true;
+                state.error = null;
             })
             .addCase(registerUser.fulfilled, (state, action) => {
-                state.loading=false;
-                state.user=action.payload?.data;
-                state.error =null;
+                state.loading = false;
+                state.user = action.payload?.data;
+                state.error = null;
              })
             .addCase(registerUser.rejected, (state, action) => { 
                 state.loading = false;
                 state.error = action.payload;
             })
             // ------------------Login-----------------------
-            .addCase(loginUser.pending, (state ) => {
-                state.loading = true,
-                    state.error = null
+            .addCase(loginUser.pending, (state) => {
+                state.loading = true;
+                state.error = null;
             })
             .addCase(loginUser.fulfilled, (state, action) => {
-                state.loading=false;
-                state.user=action.payload?.data?.user;
-                state.isAuthenticated = true
+                state.loading = false;
+                state.user = action.payload?.data?.user;
+                state.isAuthenticated = true;
              })
             .addCase(loginUser.rejected, (state, action) => {
                 state.loading = false;
@@ -55,28 +55,28 @@ const authSlice = createSlice({
                 state.isAuthenticated = false;
              })
              //------logout-------------------
-            .addCase(logoutUser.pending, (state ) => {
-                state.loading = true,
-                    state.error = null
+            .addCase(logoutUser.pending, (state) => {
+                state.loading = true;
+                state.error = null;
             })
             .addCase(logoutUser.fulfilled, (state) => { 
-                state.loading=false;
+                state.loading = false;
                 state.user = null;
-                state.isAuthenticated=false;
-                state.error= null
+                state.isAuthenticated = false;
+                state.error = null;
             })
             .addCase(logoutUser.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
              })
              //------------------------------refresh access token ------------------------------------
-            .addCase(refreshUserAccessToken.pending, (state, ) => {
-                state.loading = true,
-                    state.error = null
+            .addCase(refreshUserAccessToken.pending, (state) => {
+                state.loading = true;
+                state.error = null;
             })
-            .addCase(refreshUserAccessToken.fulfilled, (state,action) => {
-                state.loading = false,
-                state.tokens = action.payload?.data
+            .addCase(refreshUserAccessToken.fulfilled, (state, action) => {
+                state.loading = false;
+                state.tokens = action.payload?.data;
              })
             .addCase(refreshUserAccessToken.rejected, (state, action) => {
                 state.loading =false;
@@ -85,7 +85,7 @@ const authSlice = createSlice({
                 state.error = action.payload
              })
              //----------------------------get current user ----------------------------------
-            .addCase(getCurrentUserThunk.pending, (state, ) => {
+            .addCase(getCurrentUserThunk.pending, (state) => {
                 // state.loading = true,
                 //     state.error = null
                 state.initializing = true;
