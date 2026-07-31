@@ -1,3 +1,4 @@
+import AuthInitializer from "./components/auth/AuthInitializer"
 import AppRouter from "./routes/AppRouter"
 
 function App() {
@@ -7,7 +8,9 @@ function App() {
     <>
       {/* <h1> Frontend runnig Okay</h1>
        */}
+       <AuthInitializer>
        <AppRouter/>
+       </AuthInitializer>
     </>
   )
 }

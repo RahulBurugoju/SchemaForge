@@ -1,14 +1,15 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom"
-import LandingPage from '../pages/LandingPage.jsx'
-import RegisterPage from '../pages/RegisterPage.jsx'
-import DashboardPage from '../pages/DashboardPage.jsx'
-import LoginPage from '../pages/LoginPage.jsx'
-import WorkspacePage from '../pages/WorkspacePage.jsx'
-import ExportPage from '../pages/ExportPage.jsx'
-import SettingsPage from '../pages/SettingsPage.jsx'
-import NotFoundPage from '../pages/NotFoundPage.jsx'
-import RootLayout from '../layouts/RootLayout.jsx'
-
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import LandingPage from "../pages/LandingPage.jsx";
+import RegisterPage from "../pages/RegisterPage.jsx";
+import DashboardPage from "../pages/DashboardPage.jsx";
+import LoginPage from "../pages/LoginPage.jsx";
+import WorkspacePage from "../pages/WorkspacePage.jsx";
+import ExportPage from "../pages/ExportPage.jsx";
+import SettingsPage from "../pages/SettingsPage.jsx";
+import NotFoundPage from "../pages/NotFoundPage.jsx";
+import RootLayout from "../layouts/RootLayout.jsx";
+import ProtectedRoute from "./ProtectedRoute.jsx";
+import PublicRoute from "./PublicRoute.jsx";
 
 const router = createBrowserRouter([
   {
@@ -20,28 +21,39 @@ const router = createBrowserRouter([
         element: <LandingPage />,
       },
       {
-        path: "login",
-        element: <LoginPage />,
+        element: <PublicRoute />,
+        children: [
+          {
+            path: "login",
+            element: <LoginPage />,
+          },
+          {
+            path: "register",
+            element: <RegisterPage />,
+          },
+        ],
       },
+
       {
-        path: "register",
-        element: <RegisterPage />,
-      },
-      {
-        path: "dashboard",
-        element: <DashboardPage />,
-      },
-      {
-        path: "workspace",
-        element: <WorkspacePage />,
-      },
-      {
-        path: "export",
-        element: <ExportPage />,
-      },
-      {
-        path: "settings",
-        element: <SettingsPage />,
+        element: <ProtectedRoute />,
+        children: [
+          {
+            path: "dashboard",
+            element: <DashboardPage />,
+          },
+          {
+            path: "workspace",
+            element: <WorkspacePage />,
+          },
+          {
+            path: "export",
+            element: <ExportPage />,
+          },
+          {
+            path: "settings",
+            element: <SettingsPage />,
+          },
+        ],
       },
       {
         path: "*",
@@ -52,9 +64,7 @@ const router = createBrowserRouter([
 ]);
 
 function AppRouter() {
-  return (
-    <RouterProvider router={router}/>
-  )
+  return <RouterProvider router={router} />;
 }
 
-export default AppRouter
+export default AppRouter;
