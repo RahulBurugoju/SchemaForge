@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser'
 import { notFound } from "./middlewares/notFound.middleware.js"
 import { errorHandler } from "./middlewares/error.middleware.js"
 import authRouter from "./routes/auth.route.js"
-
+import projectRouter from './routes/project.route.js'
 
 const app = express();
 
@@ -26,6 +26,7 @@ app.get("/api/v1/health", (req, res) => {
 
 // routes 
 app.use("/api/v1/auth", authRouter)
+app.use("/api/v1/project", projectRouter)
 
 
 // 404 Not Found Middleware
