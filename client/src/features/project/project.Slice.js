@@ -61,13 +61,14 @@ const projectSlice = createSlice({
         state.projects = [];
       })
       // ----------------------fetch by Id-------------------------------
-      .addCase(fetchProjectById.pending, (state, action) => {
-        ((state.loading = true), (state.error = null));
+      .addCase(fetchProjectById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
       .addCase(fetchProjectById.fulfilled, (state, action) => {
-        state.currentProject = action.payload?.data;
-        ((state.loading = false), (state.error = null));
-        state.projects.unshift(action.payload.data);
+        state.currentProject = action.payload?.data || action.payload;
+        state.loading = false;
+        state.error = null;
       })
       .addCase(fetchProjectById.rejected, (state, action) => {
         state.loading = false;

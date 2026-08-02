@@ -20,10 +20,6 @@ const router = createBrowserRouter([
         index: true,
         element: <LandingPage />,
       },
-      // {
-      //       path: "dashboard",
-      //       element: <DashboardPage />,
-      //     },
       {
         element: <PublicRoute />,
         children: [
@@ -47,6 +43,10 @@ const router = createBrowserRouter([
           },
           {
             path: "workspace",
+            element: <WorkspacePage />,
+          },
+          {
+            path: "workspace/:projectId",
             element: <WorkspacePage />,
           },
           {

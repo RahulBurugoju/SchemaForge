@@ -5,20 +5,21 @@ import ProjectGrid from "../components/dashboard/ProjectGrid";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProjects } from "../features/project/project.Thunk";
 import { Loader2, AlertCircle, RefreshCw } from "lucide-react";
+import Modal from "../components/modal/Modal";
+import CreateProjectModal from "../components/project/CreateProjectModal";
 function DashboardPage() {
   const dispatch = useDispatch()
   const { user } = useSelector((state) => state.auth);
   const {projects,loading,error} = useSelector(state=>state.project)
-  {console.log(user)
-    console.log(projects)
-  }
+  
+  const [isOpen,setIsOpen] = useState(false)
 
   useEffect(()=>{
     dispatch(fetchProjects())
   },[dispatch])
   
   const handleCreate = () => {
-    console.log("Create project");
+    setIsOpen(true)
   };
 
   if (loading) {
@@ -64,11 +65,16 @@ function DashboardPage() {
 
       {/* Main Content Area */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
-        <DashboardHeader user={user} onCreate={handleCreate} />
+        <DashboardHeader  user={user} onCreate={handleCreate} />
         <DashboardStats projects={projects} 
         />
         <ProjectGrid projects={projects}/>
       </main>
+
+      {isOpen && (
+        <Modal handelCLick = {setIsOpen}>
+          <CreateProjectModal onClose={()=>setIsOpen(false)}/>
+        </Modal>)}
     </div>
   );
 }

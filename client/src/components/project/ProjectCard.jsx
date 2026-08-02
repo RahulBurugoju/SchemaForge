@@ -1,10 +1,12 @@
 import React from 'react'
 import { Database, Calendar, ExternalLink, Pencil, Trash2 } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 function ProjectCard({ project }) {
+  const navigate = useNavigate()
   if (!project) return null
 
-  const name = project.name || project.projectName || 'Untitled Model'
+  const name = project.projectName || project.name || 'Untitled Model'
   const databaseType = project.databaseType || 'PostgreSQL'
   const description = project.description || 'No description provided for this schema model.'
   
@@ -16,9 +18,13 @@ function ProjectCard({ project }) {
     ? new Date(project.updatedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
     : 'Recently'
 
-    const handelOpen=()=>{
-      console.log("Open")
+  const handelOpen = () => {
+    if (project._id) {
+      navigate(`/workspace/${project._id}`)
+    } else {
+      navigate('/workspace')
     }
+  }
     const handelEdit=()=>{
       console.log("Edit")
     }

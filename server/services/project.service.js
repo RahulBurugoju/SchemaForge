@@ -4,10 +4,10 @@ import { mongoose,isValidObjectId } from "mongoose"
 import { ApiError } from "../utils/ApiError.js"
 
 
-const createProjectService = async (userId,name,description,databaseType,isArchived)=>{
+const createProjectService = async (userId,projectName,description,databaseType,isArchived)=>{
     const existedProject = await Project.findOne({
         owner:userId,
-        name
+        projectName
     })
     if(existedProject){
         throw new ApiError(409, "Project with this name already exists")
@@ -18,7 +18,7 @@ const createProjectService = async (userId,name,description,databaseType,isArchi
     }
 
     const project =await Project.create({
-        name,
+        projectName,
         description,
         databaseType,
         owner:userId,
@@ -103,7 +103,7 @@ const getProjectsService = async (userId)=>{
     return projects;
 }
 
-const updateProjectService = async (projectId, userId, { name, description, databaseType }) => {
+const updateProjectService = async (projectId, userId, { projectName, description, databaseType }) => {
     if (!isValidObjectId(projectId)) {
         throw new ApiError(400, "Invalid project ID");
     }
@@ -112,7 +112,7 @@ const updateProjectService = async (projectId, userId, { name, description, data
     }
 
     const fieldsToUpdate = {};
-    if (name !== undefined) fieldsToUpdate.name = name.trim();
+    if (projectName !== undefined) fieldsToUpdate.projectName = projectName.trim();
     if (description !== undefined) fieldsToUpdate.description = description;
     if (databaseType !== undefined) fieldsToUpdate.databaseType = databaseType;
 

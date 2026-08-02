@@ -12,9 +12,9 @@ import {
 import { ApiError } from "../utils/ApiError.js";
 
 const createProject = asyncHandler(async(req,res)=>{
-  const {name,description,databaseType,isArchived} = req.body;
+  const {projectName,description,databaseType,isArchived} = req.body;
   const userId = req.user._id;
-  const response = await createProjectService(userId,name,description,databaseType,isArchived);
+  const response = await createProjectService(userId,projectName,description,databaseType,isArchived);
 
   return res.status(201).json(
     new ApiResponse(201,response,"Successfully created a New Project")
@@ -51,9 +51,9 @@ const getProjects = asyncHandler(async(req,res)=>{
 const updateProject = asyncHandler(async(req,res)=>{
   const { id } = req.params;
   const userId = req.user._id;
-  const { name, description, databaseType } = req.body;
+  const { projectName, description, databaseType } = req.body;
 
-  const updatedProject = await updateProjectService(id, userId, { name, description, databaseType });
+  const updatedProject = await updateProjectService(id, userId, { projectName, description, databaseType });
 
   return res.status(200).json(
     new ApiResponse(200, updatedProject, "Project updated successfully")
