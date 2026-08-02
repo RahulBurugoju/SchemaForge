@@ -86,21 +86,22 @@ const authSlice = createSlice({
              })
              //----------------------------get current user ----------------------------------
             .addCase(getCurrentUserThunk.pending, (state) => {
-                // state.loading = true,
-                //     state.error = null
+                state.loading = true,
+                    state.error = null
                 state.initializing = true;
             })
             .addCase(getCurrentUserThunk.fulfilled, (state, action) => { 
-                 state.initializing = false;
+                state.initializing = false;
                 state.user = action.payload?.data;
                 state.isAuthenticated=true;
                 state.error=null;
             })
             .addCase(getCurrentUserThunk.rejected, (state, action) => {
-                 state.initializing = false;
+                state.initializing = false;
                 state.isAuthenticated=false;
                 state.user = null;
-                // state.error = action.payload;
+                state.error = action.payload;
+                state.loading=false
              })
     }
 });

@@ -6,7 +6,7 @@ const createProject = async(projectDetails)=>{
 }
 
 const getProjects = async()=>{
-    const response = await api.get('/projects/getprojects')
+    const response = await api.get('/projects/get-projects')
 
     return response.data;
 }
