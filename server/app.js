@@ -26,7 +26,7 @@ app.get("/api/v1/health", (req, res) => {
 
 // routes 
 app.use("/api/v1/auth", authRouter)
-app.use("/api/v1/project", projectRouter)
+app.use("/api/v1/projects", projectRouter)
 
 
 // 404 Not Found Middleware
