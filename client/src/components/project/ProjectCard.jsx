@@ -1,11 +1,12 @@
 import React from 'react'
 import { Database, Calendar, ExternalLink, Pencil, Trash2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import ProjectActions from './ProjectActions';
 
 function ProjectCard({ project }) {
   const navigate = useNavigate()
   if (!project) return null
-
+;
   const name = project.projectName || project.name || 'Untitled Model'
   const databaseType = project.databaseType || 'PostgreSQL'
   const description = project.description || 'No description provided for this schema model.'
@@ -67,7 +68,7 @@ function ProjectCard({ project }) {
         </div>
 
         {/* Action Buttons Bar (Open, Edit, Delete) */}
-        <div className="flex items-center justify-between gap-2 pt-1">
+        {/* <div className="flex items-center justify-between gap-2 pt-1">
           <div className="flex items-center gap-1.5">
             <button
               type="button"
@@ -96,7 +97,10 @@ function ProjectCard({ project }) {
             <Trash2 className="w-3.5 h-3.5" />
             <span>Delete</span>
           </button>
-        </div>
+        </div> */}
+
+
+        <ProjectActions project={project}/>
       </div>
     </div>
   )

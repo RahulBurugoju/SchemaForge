@@ -1,4 +1,5 @@
 import React from 'react'
+import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 
 function Modal({ handelCLick, children }) {
@@ -9,7 +10,7 @@ function Modal({ handelCLick, children }) {
     }
   };
 
-  return (
+  const modalContent = (
     <div
       onClick={handleClose}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md font-sans selection:bg-zinc-700 selection:text-white animate-fade-in"
@@ -38,7 +39,9 @@ function Modal({ handelCLick, children }) {
         </div>
       </div>
     </div>
-  )
+  );
+
+  return createPortal(modalContent, document.body);
 }
 
 export default Modal
