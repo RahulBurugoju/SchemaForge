@@ -12,11 +12,13 @@ import {
   Database,
   Layers
 } from 'lucide-react'
+import useCanvas from '../../hooks/useCanvas'
 
-function Toolbar() {
+function Toolbar({ addTable: addTableProp }) {
   const navigate = useNavigate()
   const { currentProject } = useSelector((state) => state.project)
-
+  const defaultCanvas = useCanvas()
+  const addTable = addTableProp || defaultCanvas.addTable
   const projectName = currentProject?.projectName || currentProject?.name || "Inventory System"
   const databaseType = currentProject?.databaseType || "PostgreSQL"
 
@@ -74,6 +76,7 @@ function Toolbar() {
 
         {/* Table & Relation Buttons */}
         <button
+          onClick={addTable}
           type="button"
           className="bg-white text-black hover:bg-zinc-200 font-semibold rounded-lg px-3 py-1.5 flex items-center gap-1.5 shadow-sm active:scale-[0.98] transition-all cursor-pointer"
         >
@@ -112,4 +115,4 @@ function Toolbar() {
   )
 }
 
-export default Toolbar
+export default Toolbar

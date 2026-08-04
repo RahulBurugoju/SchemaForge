@@ -1,23 +1,29 @@
-import React from 'react'
-import Toolbar from '../components/workspace/Toolbar'
-import ExplorerPanel from '../components/workspace/ExplorerPanel'
-import CanvasPanel from '../components/workspace/CanvasPanel'
-import InspectorPanel from '../components/workspace/InspectorPanel'
-import StatusBar from '../components/workspace/StatusBar'
+import React from "react";
+import Toolbar from "../components/workspace/Toolbar";
+import ExplorerPanel from "../components/workspace/ExplorerPanel";
+import CanvasPanel from "../components/workspace/canvas/CanvasPanel";
+import InspectorPanel from "../components/workspace/InspectorPanel";
+import StatusBar from "../components/workspace/StatusBar";
+import { ReactFlowProvider } from "@xyflow/react";
+import useCanvas from "../hooks/useCanvas";
 
 function WorkspaceLayout() {
+  const canvasState = useCanvas();
+
   return (
     <div className="h-screen w-screen bg-black text-zinc-100 flex flex-col font-sans overflow-hidden select-none">
       {/* Top IDE Toolbar */}
       <header className="shrink-0 z-30">
-        <Toolbar />
+        <Toolbar addTable={canvasState.addTable} />
       </header>
 
       {/* Main Split Layout: Explorer (Left) | Canvas (Center) | Inspector (Right) */}
       <main className="flex-1 flex overflow-hidden relative">
         <ExplorerPanel />
-        <CanvasPanel />
-        <InspectorPanel />
+        <ReactFlowProvider>
+          <CanvasPanel canvasState={canvasState} />
+        </ReactFlowProvider>
+        <InspectorPanel canvasState={canvasState} />
       </main>
 
       {/* Bottom Status Bar */}
@@ -25,7 +31,7 @@ function WorkspaceLayout() {
         <StatusBar />
       </footer>
     </div>
-  )
+  );
 }
 
-export default WorkspaceLayout
+export default WorkspaceLayout;
