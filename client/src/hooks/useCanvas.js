@@ -1,6 +1,6 @@
 import { addEdge, useEdgesState, useNodesState } from "@xyflow/react";
 import { useCallback, useEffect, useState } from "react";
-import createTableNode from "../utils/createTableNode";
+import createTableNode from "../utils/table/createTableNode";
 import validateConnection from "../utils/validateConnection";
 import { useSelector } from "react-redux";
 
