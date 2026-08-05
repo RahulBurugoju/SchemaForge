@@ -1,22 +1,34 @@
 import React, { memo } from "react";
 import { Handle, Position } from "@xyflow/react";
-import { Key, Link } from "lucide-react";
 
-function ColumnItem({ column }) {
-  const isPk = column?.isPk || column?.isPrimaryKey || column?.name?.toLowerCase() === "id";
-  const isFk = column?.isFk || column?.isForeignKey || (column?.name && column.name.endsWith("_id"));
+function ColumnItem({ column, nodeId }) {
+  const isPk = column?.isPk || column?.isPrimaryKey;
+  const isFk = column?.isFk || column?.isForeignKey;
+  const isUq = !!column?.unique;
+  const isNn = column?.nullable === false;
+  const isAi = !!column?.autoIncrement;
+
+  const displayType = column?.length
+    ? `${column?.type || ""}(${column.length})`
+    : column?.type || "";
+
+  const colId = column?.id || column?.name;
+  const safeNodeId = nodeId || "node";
+  const targetHandleId = `target-${safeNodeId}-${colId}`;
+  const sourceHandleId = `source-${safeNodeId}-${colId}`;
 
   return (
-    <div className="relative px-3.5 py-2 flex items-center justify-between text-xs hover:bg-slate-800/50 transition-colors group select-none">
-      {/* Target Handle on Left */}
+    <div className="relative px-3.5 py-2 flex items-center justify-between text-xs hover:bg-slate-800/50 transition-colors group select-none gap-2">
+      {/* Target Handle on Left (Sky Blue) */}
       <Handle
         type="target"
         position={Position.Left}
-        id={`target-${column.id || column.name}`}
-        className="!w-2.5 !h-2.5 !bg-sky-400 !border-2 !border-slate-950 !-left-1.5 transition-transform hover:scale-125 cursor-crosshair"
+        id={targetHandleId}
+        className="w-4 h-4 !bg-sky-400 !border-2 !border-slate  transition-transform hover:!bg-sky-300 hover:!scale-150 cursor-crosshair z-20 shadow-md"
       />
 
-      <div className="flex items-center gap-2 text-slate-200 min-w-0 pr-2">
+      {/* Column Name */}
+      <div className="flex items-center gap-1.5 text-slate-200 min-w-0 flex-1">
         <span
           className={`font-medium tracking-tight text-xs truncate ${
             isPk
@@ -30,16 +42,45 @@ function ColumnItem({ column }) {
         </span>
       </div>
 
-      <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider pl-2 flex-shrink-0">
-        {column?.type}
-      </span>
+      {/* Type & Constraint Badges */}
+      <div className="flex items-center gap-1 shrink-0">
+        <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
+          {displayType}
+        </span>
 
-      {/* Source Handle on Right */}
+        {isPk && (
+          <span className="bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[9px] font-mono px-1 rounded font-bold">
+            PK
+          </span>
+        )}
+        {isFk && (
+          <span className="bg-sky-500/20 text-sky-300 border border-sky-500/30 text-[9px] font-mono px-1 rounded font-bold">
+            FK
+          </span>
+        )}
+        {isUq && (
+          <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[9px] font-mono px-1 rounded font-bold">
+            UQ
+          </span>
+        )}
+        {isNn && (
+          <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[9px] font-mono px-1 rounded font-bold">
+            NN
+          </span>
+        )}
+        {isAi && (
+          <span className="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-[9px] font-mono px-1 rounded font-bold">
+            AI
+          </span>
+        )}
+      </div>
+
+      {/* Source Handle on Right (Indigo) */}
       <Handle
         type="source"
         position={Position.Right}
-        id={`source-${column.id || column.name}`}
-        className="!w-2.5 !h-2.5 !bg-indigo-400 !border-2 !border-slate-950 !-right-1.5 transition-transform hover:scale-125 cursor-crosshair"
+        id={sourceHandleId}
+        className="w-4 h-4 !bg-white !border-2 !border-slate  transition-transform hover:!bg-indigo-300 hover:!scale-150 cursor-crosshair z-20 shadow-md"
       />
     </div>
   );

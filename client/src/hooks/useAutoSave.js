@@ -1,16 +1,36 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-function useAutoSave({ nodes, edges, enable = true, delay = 1000, onSave }) {
+function useAutoSave({
+  nodes,
+  edges,
+  viewport,
+  enable = true,
+  delay = 1000,
+  onSave,
+}) {
   const timerRef = useRef(null);
   const isInitialLoadRef = useRef(true);
   const onSaveRef = useRef(onSave);
 
   const [status, setStatus] = useState("saved");
 
-  // Keep onSaveRef updated with latest onSave callback
   useEffect(() => {
     onSaveRef.current = onSave;
   }, [onSave]);
+
+  const forceSave = useCallback(async () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+    try {
+      setStatus("saving");
+      await onSaveRef.current?.();
+      setStatus("saved");
+    } catch (error) {
+      setStatus("error");
+      console.error("Manual Save Error:", error);
+    }
+  }, []);
 
   useEffect(() => {
     if (!enable) {
@@ -40,7 +60,6 @@ function useAutoSave({ nodes, edges, enable = true, delay = 1000, onSave }) {
         if (isMounted) setStatus("saved");
       } catch (error) {
         if (isMounted) setStatus("error");
-
         console.error("AutoSave Error:", error);
       }
     }, delay);
@@ -51,9 +70,13 @@ function useAutoSave({ nodes, edges, enable = true, delay = 1000, onSave }) {
         clearTimeout(timerRef.current);
       }
     };
-  }, [nodes, edges, delay, enable]);
+  }, [nodes, edges, viewport, delay, enable]);
 
-  return status;
+  return {
+    status,
+    hasUnsavedChanges: status === "unsaved" || status === "error",
+    forceSave,
+  };
 }
 
-export default useAutoSave;
+export default useAutoSave;

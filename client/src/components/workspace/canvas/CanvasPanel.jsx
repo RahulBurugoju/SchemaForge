@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from "react";
+import React, { memo, useCallback, useState } from "react";
 import {
   Background,
   Controls,
@@ -8,12 +8,23 @@ import {
 import "@xyflow/react/dist/style.css";
 
 import { nodeTypes } from "./nodeTypes";
+import { edgeTypes } from "../edges/edgeTypes";
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedNode } from "../../../features/canvas/canvas.Slice";
+import { setSelectedNode, setSelectedEdge } from "../../../features/canvas/canvas.Slice";
+import useKeyboardShortcuts from "../../../hooks/useKeyboardShortcuts";
+import TableContextMenu from "../contextMenu/TableContextMenu";
+import addColumn from "../../../utils/table/addColumn";
+import duplicateTable from "../../../utils/table/duplicateTable";
+import deleteTable from "../../../utils/table/deleteTable";
 
 function CanvasPanel({ canvasState }) {
   const dispatch = useDispatch();
+  useKeyboardShortcuts({ canvasState });
+
+  const [menu, setMenu] = useState(null);
+
   const selectedNode = useSelector((state) => state.canvas.selectedNode);
+  const selectedEdge = useSelector((state) => state.canvas.selectedEdge);
   const {
     nodes,
     edges,
@@ -21,6 +32,8 @@ function CanvasPanel({ canvasState }) {
     onEdgesChange,
     onConnect,
     isValidConnection,
+    setNodes,
+    setEdges,
     setViewport,
   } = canvasState || {};
 
@@ -31,9 +44,66 @@ function CanvasPanel({ canvasState }) {
     [dispatch]
   );
 
+  const onEdgeClick = useCallback(
+    (_, edge) => {
+      dispatch(setSelectedEdge(edge));
+    },
+    [dispatch]
+  );
+
   const onPanelClick = useCallback(() => {
     dispatch(setSelectedNode(null));
+    dispatch(setSelectedEdge(null));
+    setMenu(null);
   }, [dispatch]);
+
+  const onNodeContextMenu = useCallback(
+    (e, node) => {
+      e.preventDefault();
+      dispatch(setSelectedNode(node));
+      setMenu({
+        x: e.clientX,
+        y: e.clientY,
+        node,
+      });
+    },
+    [dispatch]
+  );
+
+  const handleAddColumn = useCallback(
+    (node) => {
+      if (!node?.id) return;
+      const updatedNodes = addColumn(nodes, node.id);
+      setNodes?.(updatedNodes);
+    },
+    [nodes, setNodes]
+  );
+
+  const handleDuplicate = useCallback(
+    (node) => {
+      if (!node?.id) return;
+      const updatedNodes = duplicateTable(nodes, node.id);
+      setNodes?.(updatedNodes);
+      const duplicated = updatedNodes[updatedNodes.length - 1];
+      if (duplicated) dispatch(setSelectedNode(duplicated));
+    },
+    [nodes, setNodes, dispatch]
+  );
+
+  const handleDelete = useCallback(
+    (node) => {
+      if (!node?.id) return;
+      const { nodes: updatedNodes, edges: updatedEdges } = deleteTable(
+        nodes,
+        edges,
+        node.id
+      );
+      setNodes?.(updatedNodes);
+      setEdges?.(updatedEdges);
+      dispatch(setSelectedNode(null));
+    },
+    [nodes, edges, setNodes, setEdges, dispatch]
+  );
 
   const handleMoveEnd = useCallback(
     (_, vp) => {
@@ -54,8 +124,11 @@ function CanvasPanel({ canvasState }) {
           onConnect={onConnect}
           isValidConnection={isValidConnection}
           nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
           onNodeClick={onNodeClick}
+          onEdgeClick={onEdgeClick}
           onPaneClick={onPanelClick}
+          onNodeContextMenu={onNodeContextMenu}
           onMoveEnd={handleMoveEnd}
           fitView
           colorMode="dark"
@@ -76,6 +149,19 @@ function CanvasPanel({ canvasState }) {
             className="!bg-slate-900/90 !border !border-slate-800 !rounded-xl !overflow-hidden shadow-2xl backdrop-blur-md"
           />
         </ReactFlow>
+
+        {menu && (
+          <TableContextMenu
+            x={menu.x}
+            y={menu.y}
+            node={menu.node}
+            onClose={() => setMenu(null)}
+            onRename={(n) => dispatch(setSelectedNode(n))}
+            onAddColumn={handleAddColumn}
+            onDuplicate={handleDuplicate}
+            onDelete={handleDelete}
+          />
+        )}
       </div>
     </div>
   );

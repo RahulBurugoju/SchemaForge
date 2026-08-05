@@ -2,7 +2,7 @@ import React, { memo, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { Database, CheckCircle2, Loader2, AlertCircle, Clock } from 'lucide-react'
 
-function StatusBar({ saveStatus }) {
+function StatusBar({ saveStatus, onRetry }) {
   const { currentProject } = useSelector((state) => state.project)
 
   const projectName = currentProject?.projectName || currentProject?.name || "Inventory System"
@@ -27,9 +27,20 @@ function StatusBar({ saveStatus }) {
         )
       case 'error':
         return (
-          <div className="flex items-center gap-1.5 text-rose-400 font-sans font-medium">
-            <AlertCircle className="w-3 h-3 shrink-0" />
-            <span>Save error</span>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 text-rose-400 font-sans font-medium">
+              <AlertCircle className="w-3 h-3 shrink-0" />
+              <span>Save error</span>
+            </div>
+            {onRetry && (
+              <button
+                type="button"
+                onClick={onRetry}
+                className="px-1.5 py-0.5 bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 text-[10px] rounded font-sans font-semibold transition-all cursor-pointer"
+              >
+                Retry
+              </button>
+            )}
           </div>
         )
       case 'saved':
@@ -41,7 +52,7 @@ function StatusBar({ saveStatus }) {
           </div>
         )
     }
-  }, [saveStatus])
+  }, [saveStatus, onRetry])
 
   return (
     <div className="bg-zinc-950 border-t border-zinc-800/80 px-4 py-1.5 flex items-center justify-between font-mono text-[11px] text-zinc-400 select-none">

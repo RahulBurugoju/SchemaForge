@@ -36,7 +36,7 @@ function WorkspaceLayout({
 
       {/* Bottom Status Bar */}
       <footer className="shrink-0 z-30">
-        <StatusBar saveStatus={saveStatus} />
+        <StatusBar saveStatus={saveStatus} onRetry={handleSave} />
       </footer>
     </div>
   );

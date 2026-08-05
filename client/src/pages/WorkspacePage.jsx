@@ -29,7 +29,7 @@ function WorkspacePage() {
 
 
   const canvasState = useCanvas();
-  const { nodes,edges, getCanvasSnapshot } = canvasState;
+  const { nodes, edges, viewport, getCanvasSnapshot } = canvasState;
 
   const handleSave = useCallback(async () => {
     const canvasData = getCanvasSnapshot();
@@ -39,14 +39,14 @@ function WorkspacePage() {
     ).unwrap();
   }, [dispatch, getCanvasSnapshot, projectId]);
 
-  const saveStatus = useAutoSave({
+  const { status: saveStatus, forceSave } = useAutoSave({
     nodes,
     edges,
+    viewport,
     enable: autoSaveEnable && !loading && !!currentProject,
     delay: 1000,
     onSave: handleSave,
   });
-  
 
   // Task 7 - Loading State
   if (loading && !currentProject) {
@@ -96,14 +96,12 @@ function WorkspacePage() {
 
   return (
     <>
-      {/* {console.log(currentProject.canvasData)} */}
-
-      <WorkspaceLayout canvasState={canvasState}
-                       handleSave={handleSave} 
-                       saveStatus={saveStatus}
-                       autoSaveEnable={autoSaveEnable}
-                       setAutoSaveEnable={setAutoSaveEnable}
-      
+      <WorkspaceLayout
+        canvasState={canvasState}
+        handleSave={forceSave || handleSave}
+        saveStatus={saveStatus}
+        autoSaveEnable={autoSaveEnable}
+        setAutoSaveEnable={setAutoSaveEnable}
       />
     </>
   );

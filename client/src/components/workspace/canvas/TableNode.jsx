@@ -38,9 +38,9 @@ function TableNode({ id, data, selected }) {
 
   return (
     <div
-      className={`relative min-w-[260px] max-w-[320px] bg-slate-900/95 backdrop-blur-xl border transition-all duration-200 rounded-2xl shadow-2xl shadow-slate-950/80 overflow-hidden ${
+      className={`relative min-w-[260px] max-w-[320px] bg-slate-900/95 backdrop-blur-xl border transition-all duration-200 rounded-2xl shadow-2xl overflow-visible ${
         selected
-          ? "border-indigo-500 ring-2 ring-indigo-500/40 shadow-indigo-950/60"
+          ? "border-indigo-500 ring-2 ring-indigo-500/50 shadow-indigo-500/20 shadow-indigo-950/60 scale-[1.01]"
           : "border-slate-800/90 hover:border-slate-700/90"
       }`}
     >
@@ -48,7 +48,7 @@ function TableNode({ id, data, selected }) {
       <Handle
         type="target"
         position={Position.Left}
-        className="!w-3 !h-3 !bg-slate-950 !border-2 !border-indigo-500 hover:!bg-indigo-500 transition-colors shadow-md"
+        className="w-3 h-3 !bg-white !border-2 !border-indigo-500 hover:!bg-indigo-500 transition-colors shadow-md"
       />
 
       {/* Table Header */}
@@ -58,7 +58,11 @@ function TableNode({ id, data, selected }) {
       <div className="py-1 divide-y divide-slate-800/40">
         {columns.length > 0 ? (
           columns.map((column, index) => (
-            <ColumnItem key={column.id || column.name || index} column={column} />
+            <ColumnItem
+              key={column.id || column.name || index}
+              column={column}
+              nodeId={id}
+            />
           ))
         ) : (
           <div className="px-4 py-3 text-center text-xs text-slate-500 italic">
@@ -81,7 +85,7 @@ function TableNode({ id, data, selected }) {
       <Handle
         type="source"
         position={Position.Right}
-        className="!w-3 !h-3 !bg-slate-950 !border-2 !border-sky-400 hover:!bg-sky-400 transition-colors shadow-md"
+        className="w-3 h-3 !bg-white !border-2 !border-sky-400 hover:!bg-sky-400 transition-colors shadow-md"
       />
     </div>
   );

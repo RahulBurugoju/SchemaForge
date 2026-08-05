@@ -4,6 +4,10 @@ import createTableNode from "../utils/table/createTableNode";
 import validateConnection from "../utils/validateConnection";
 import { useSelector } from "react-redux";
 
+import createRelationship from "../utils/relationship/createRelationship";
+import serializeCanvas from "../utils/canvas/serializeCanvas";
+import restoreCanvas from "../utils/canvas/restoreCanvas";
+
 function useCanvas() {
   const { currentProject } = useSelector((state) => state.project);
 
@@ -16,26 +20,10 @@ function useCanvas() {
   });
 
   useEffect(() => {
-    if (currentProject) {
-      const canvasData = currentProject.canvasData;
-      setNodes(canvasData?.nodes || []);
-      setEdges(canvasData?.edges || []);
-      setViewport(
-        canvasData?.viewport || {
-          x: 0,
-          y: 0,
-          zoom: 1,
-        }
-      );
-    } else {
-      setNodes([]);
-      setEdges([]);
-      setViewport({
-        x: 0,
-        y: 0,
-        zoom: 1,
-      });
-    }
+    const restored = restoreCanvas(currentProject);
+    setNodes(restored.nodes);
+    setEdges(restored.edges);
+    setViewport(restored.viewport);
   }, [currentProject?._id, setNodes, setEdges]);
 
   const isValidConnection = useCallback(
@@ -50,14 +38,8 @@ function useCanvas() {
           return eds;
         }
 
-        return addEdge(
-          {
-            ...params,
-            animated: true,
-            style: { stroke: "#38BDF8", strokeWidth: 2 },
-          },
-          eds
-        );
+        const newRelationship = createRelationship(params);
+        return [...eds, newRelationship];
       });
     },
     [setEdges]
@@ -73,11 +55,7 @@ function useCanvas() {
   }, [nodes.length, setNodes]);
 
   const getCanvasSnapshot = useCallback(
-    () => ({
-      nodes,
-      edges,
-      viewport,
-    }),
+    () => serializeCanvas(nodes, edges, viewport),
     [nodes, edges, viewport]
   );
 
