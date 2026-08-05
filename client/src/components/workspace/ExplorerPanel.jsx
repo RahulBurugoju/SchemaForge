@@ -10,7 +10,7 @@ function ExplorerPanel() {
   const databaseType = currentProject?.databaseType || "PostgreSQL";
 
   return (
-    <aside className="bg-zinc-950/90 border-r border-zinc-800/80 w-64 flex flex-col h-full font-sans text-xs select-none">
+    <aside className="bg-zinc-950/90 border-r border-zinc-800/80 w-75 flex flex-col h-full font-sans text-xs select-none">
       {/* Panel Header */}
       <div className="p-3.5 border-b border-zinc-800/80 flex items-center justify-between">
         <div className="flex items-center gap-2">

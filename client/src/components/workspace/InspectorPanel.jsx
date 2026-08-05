@@ -12,12 +12,16 @@ import {
   ArrowUpRight,
   Copy,
   Trash2,
+  Plus,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedNode } from "../../features/canvas/canvas.Slice";
 import updateTableName from "../../utils/table/updateTableName";
 import duplicateTable from "../../utils/table/duplicateTable";
 import deleteTable from "../../utils/table/deleteTable";
+import addColumn from "../../utils/table/addColumn";
+import deleteColumn from "../../utils/table/deleteColumn";
+import updateColumn from "../../utils/table/updateColumn";
 
 function InspectorPanel({ canvasState }) {
 
@@ -103,8 +107,58 @@ function InspectorPanel({ canvasState }) {
     dispatch(setSelectedNode(null));
   };
 
+  const handleAddColumn = (e) => {
+    if (e) e.preventDefault();
+    if (!liveSelectedNode?.id) return;
+
+    const updatedNodes = addColumn(nodes, liveSelectedNode.id);
+    setNodes(updatedNodes);
+
+    const updatedNode = updatedNodes.find((n) => n.id === liveSelectedNode.id);
+    if (updatedNode) {
+      dispatch(setSelectedNode(updatedNode));
+    }
+  };
+
+  const handleDeleteColumn = (columnId) => {
+    if (!liveSelectedNode?.id) return;
+
+    const { nodes: updatedNodes, edges: updatedEdges } = deleteColumn(
+      nodes,
+      edges,
+      liveSelectedNode.id,
+      columnId
+    );
+
+    setNodes(updatedNodes);
+    setEdges(updatedEdges);
+
+    const updatedNode = updatedNodes.find((n) => n.id === liveSelectedNode.id);
+    if (updatedNode) {
+      dispatch(setSelectedNode(updatedNode));
+    }
+  };
+
+  const handleUpdateColumn = (columnId, updates) => {
+    if (!liveSelectedNode?.id) return;
+
+    const updatedNodes = updateColumn(
+      nodes,
+      liveSelectedNode.id,
+      columnId,
+      updates
+    );
+
+    setNodes(updatedNodes);
+
+    const updatedNode = updatedNodes.find((n) => n.id === liveSelectedNode.id);
+    if (updatedNode) {
+      dispatch(setSelectedNode(updatedNode));
+    }
+  };
+
   return (
-    <aside className="bg-zinc-950/90 border-l border-zinc-800/80 w-72 flex flex-col h-full font-sans text-xs select-none">
+    <aside className="bg-zinc-950/90 border-l border-zinc-800/80 w-82 flex flex-col h-full font-sans text-xs select-none">
       {/* Panel Header */}
       <div className="p-3 border-b border-zinc-800/80 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2">
@@ -246,41 +300,82 @@ function InspectorPanel({ canvasState }) {
             </div>
 
             {/* Columns List Section */}
-            <div>
-              <div className="flex items-center justify-between mb-2">
+            <div >
+              <div className="flex items-center justify-between  mb-2">
                 <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider">
                   Columns ({columns.length})
                 </label>
+                <button
+                  type="button"
+                  onClick={handleAddColumn}
+                  className="px-2 py-1 bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 border border-indigo-500/30 text-[10px] font-medium rounded-lg transition-all flex items-center gap-1 cursor-pointer active:scale-95 shadow-sm"
+                >
+                  <Plus className="w-3 h-3 stroke-[2]" />
+                  <span>Add Column</span>
+                </button>
               </div>
 
-              <div className="space-y-1.5 max-h-56 overflow-y-auto pr-1">
+              <div className="space-y-2">
                 {columns.map((col, index) => (
                   <div
                     key={col.id || index}
-                    className="bg-zinc-900/40 border border-zinc-800/80 rounded-xl p-2.5 flex items-center justify-between hover:border-zinc-700 transition-all"
+                    className=" bg-zinc-900/50 border border-zinc-800/80 rounded-xl p-2.5 space-y-2 hover:border-zinc-700/80 transition-all group"
                   >
-                    <div className="flex items-center gap-2 min-w-0">
-                      <Hash className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
-                      <span className="font-medium text-zinc-200 truncate">
-                        {col.name}
-                      </span>
+                    <div className="flex items-center gap-2">
+                      <Hash className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                      <input
+                        type="text"
+                        value={col.name || ""}
+                        onChange={(e) =>
+                          handleUpdateColumn(col.id, { name: e.target.value })
+                        }
+                        className="flex-1 min-w-0 bg-slate-950/70 border border-slate-800/80 rounded-lg px-2 py-1 text-slate-100 text-xs focus:outline-none focus:border-indigo-500/60 font-medium"
+                        placeholder="column_name"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteColumn(col.id)}
+                        title="Delete Column"
+                        className="p-1 text-zinc-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer shrink-0"
+                      >
+                        <Trash2 className="w-3.5 h-3.5 stroke-[1.8]" />
+                      </button>
                     </div>
 
-                    {/* <div className="flex items-center gap-1.5 shrink-0">
-                      <span className="font-mono text-[10px] text-zinc-400 bg-zinc-950 px-1.5 py-0.5 rounded border border-zinc-800">
-                        {col.type}
-                      </span>
-                      {col.isPk && (
-                        <span className="bg-purple-500/10 text-purple-400 border border-purple-500/30 text-[9px] font-mono px-1.5 py-0.5 rounded font-bold">
-                          PK
-                        </span>
-                      )}
-                      {col.isFk && (
-                        <span className="bg-sky-500/10 text-sky-400 border border-sky-500/30 text-[9px] font-mono px-1.5 py-0.5 rounded font-bold">
-                          FK
-                        </span>
-                      )}
-                    </div> */}
+                    <div className="flex items-center justify-between gap-2 pt-1.5 border-t border-zinc-800/40">
+                      {/* Data Type Selector */}
+                      <select
+                        value={col.type || "VARCHAR"}
+                        onChange={(e) =>
+                          handleUpdateColumn(col.id, { type: e.target.value })
+                        }
+                        className="bg-slate-950/70 border border-slate-800/80 rounded-lg px-2 py-0.5 text-[10px] font-mono text-zinc-300 focus:outline-none focus:border-indigo-500/60 cursor-pointer"
+                      >
+                        <option value="INT">INT</option>
+                        <option value="BIGINT">BIGINT</option>
+                        <option value="VARCHAR">VARCHAR</option>
+                        <option value="TEXT">TEXT</option>
+                        <option value="BOOLEAN">BOOLEAN</option>
+                        <option value="DATE">DATE</option>
+                        <option value="TIMESTAMP">TIMESTAMP</option>
+                        <option value="UUID">UUID</option>
+                      </select>
+
+                      {/* Primary Key Toggle */}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleUpdateColumn(col.id, { isPk: !col.isPk })
+                        }
+                        className={`px-2 py-0.5 rounded text-[9px] font-mono font-bold transition-all cursor-pointer border ${
+                          col.isPk || col.isPrimaryKey
+                            ? "bg-purple-500/20 text-purple-300 border-purple-500/40 shadow-sm"
+                            : "bg-zinc-950 text-zinc-500 border-zinc-800 hover:text-zinc-300"
+                        }`}
+                      >
+                        PK
+                      </button>
+                    </div>
                   </div>
                 ))}
 

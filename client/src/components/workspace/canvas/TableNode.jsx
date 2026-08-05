@@ -5,6 +5,7 @@ import { Plus } from "lucide-react";
 import { Handle, Position, useReactFlow } from "@xyflow/react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedNode } from "../../../features/canvas/canvas.Slice";
+import addColumn from "../../../utils/table/addColumn";
 
 function TableNode({ id, data, selected }) {
   const columns = data?.columns || [];
@@ -22,6 +23,17 @@ function TableNode({ id, data, selected }) {
     if (selectedNode?.id === id) {
       dispatch(setSelectedNode(null));
     }
+  };
+
+  const handleAddColumn = () => {
+    setNodes((nds) => {
+      const updatedNodes = addColumn(nds, id);
+      if (selectedNode?.id === id) {
+        const updatedNode = updatedNodes.find((n) => n.id === id);
+        if (updatedNode) dispatch(setSelectedNode(updatedNode));
+      }
+      return updatedNodes;
+    });
   };
 
   return (
@@ -56,10 +68,14 @@ function TableNode({ id, data, selected }) {
       </div>
 
       {/* Add Column Action Button */}
-      <div className="px-4 py-2.5 bg-slate-950/40 border-t border-slate-800/60 hover:bg-slate-800/40 text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-all flex items-center justify-center gap-1.5 cursor-pointer group select-none">
+      <button
+        type="button"
+        onClick={handleAddColumn}
+        className="w-full px-4 py-2.5 bg-slate-950/40 border-t border-slate-800/60 hover:bg-slate-800/40 text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-all flex items-center justify-center gap-1.5 cursor-pointer group select-none"
+      >
         <Plus className="w-3.5 h-3.5 stroke-[2.5] group-hover:scale-110 transition-transform" />
         <span>Add Column</span>
-      </div>
+      </button>
 
       {/* Right Source Connection Handle */}
       <Handle
