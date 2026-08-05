@@ -29,7 +29,15 @@ const projectSchema = new mongoose.Schema({
     },
     canvasData:{
         type:Object,
-        default:{}
+        default: {
+    nodes: [],
+    edges: [],
+    viewport: {
+      x: 0,
+      y: 0,
+      zoom: 1,
+    },
+  },
     },
      settings:{
         type:Object,

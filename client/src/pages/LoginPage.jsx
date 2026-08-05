@@ -15,7 +15,7 @@ function LoginPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error: apiError } = useSelector((state) => state.auth);
-    {console.log(loading,"before Return")}
+
   const validate = () => {
     const newErrors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -47,14 +47,13 @@ function LoginPage() {
     const resultAction = await dispatch(loginUser(formData));
 
     if (loginUser.fulfilled.match(resultAction)) {
-      setSuccessMessage("Login Successfull...");
+      setSuccessMessage("Login successful...");
       setFormData({
         email: "",
         password: "",
       });
       setErrors({});
-      setTimeout(()=>{navigate("/dashboard");},2000)
-      // navigate("/dashboard");
+      navigate("/dashboard");
     }
   };
 
@@ -135,7 +134,6 @@ function LoginPage() {
           >
             {loading ? (
               <>
-              {console.log(loading)}
                 <Loader2 className="w-4 h-4 animate-spin" />
                 <span>Logging in...</span>
               </>

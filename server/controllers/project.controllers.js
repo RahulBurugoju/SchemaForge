@@ -51,9 +51,15 @@ const getProjects = asyncHandler(async(req,res)=>{
 const updateProject = asyncHandler(async(req,res)=>{
   const { id } = req.params;
   const userId = req.user._id;
-  const { projectName, description, databaseType } = req.body;
+  const { projectName, description, databaseType, canvasData, settings } = req.body;
 
-  const updatedProject = await updateProjectService(id, userId, { projectName, description, databaseType });
+  const updatedProject = await updateProjectService(id, userId, {
+    projectName,
+    description,
+    databaseType,
+    canvasData,
+    settings,
+  });
 
   return res.status(200).json(
     new ApiResponse(200, updatedProject, "Project updated successfully")

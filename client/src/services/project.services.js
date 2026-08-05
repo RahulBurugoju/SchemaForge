@@ -24,7 +24,7 @@ const getProjectById = async(projectId)=>{
 }
 
 const updateProject = async(projectId, projectData)=>{
-    const response = await api.put(`/projects/update-project/${projectId}`,projectData)
+    const response = await api.patch(`/projects/update-project/${projectId}`,projectData)
 
     return response.data
 }

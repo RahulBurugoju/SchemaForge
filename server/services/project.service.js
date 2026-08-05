@@ -103,7 +103,7 @@ const getProjectsService = async (userId)=>{
     return projects;
 }
 
-const updateProjectService = async (projectId, userId, { projectName, description, databaseType }) => {
+const updateProjectService = async (projectId, userId, { projectName, description, databaseType, canvasData, settings }) => {
     if (!isValidObjectId(projectId)) {
         throw new ApiError(400, "Invalid project ID");
     }
@@ -115,6 +115,8 @@ const updateProjectService = async (projectId, userId, { projectName, descriptio
     if (projectName !== undefined) fieldsToUpdate.projectName = projectName.trim();
     if (description !== undefined) fieldsToUpdate.description = description;
     if (databaseType !== undefined) fieldsToUpdate.databaseType = databaseType;
+    if (canvasData !== undefined) fieldsToUpdate.canvasData = canvasData;
+    if (settings !== undefined) fieldsToUpdate.settings = settings;
 
     const updatedProject = await Project.findOneAndUpdate(
         { _id: projectId, owner: userId },

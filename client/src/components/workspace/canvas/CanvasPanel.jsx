@@ -16,7 +16,7 @@ function CanvasPanel({ canvasState }) {
   const dispatch = useDispatch()
     const selectedNode = useSelector(state=> state.canvas.selectedNode)
   const fallbackCanvas = useCanvas();
-  const { nodes, edges, onNodesChange, onEdgesChange, onConnect, isValidConnection } = canvasState || fallbackCanvas;
+  const { nodes, edges, onNodesChange, onEdgesChange, onConnect, isValidConnection,viewport, setViewport,getCanvasSnapshot } = canvasState || fallbackCanvas;
 
   const onNodeClick = (_,node)=>{
     // console.log(node)
@@ -30,7 +30,7 @@ function CanvasPanel({ canvasState }) {
 
 
 
-  // {console.log(selectedNode)}
+  // {console.log(getCanvasSnapshot())}
   return (
     <div className="w-full h-full bg-[#090A0F] relative overflow-hidden flex flex-col font-sans select-none border border-slate-800/80  shadow-2xl">
       {/* Main ReactFlow Canvas */}
@@ -45,6 +45,9 @@ function CanvasPanel({ canvasState }) {
           nodeTypes={nodeTypes}
           onNodeClick={onNodeClick}
           onPaneClick={onPanelClick}
+          onMoveEnd={(_,viewport)=>{
+            setViewport(viewport )
+          }}
           fitView
           colorMode="dark"
         >
