@@ -72,11 +72,14 @@ function useCanvas() {
     setNodes((prev) => [...prev, node]);
   }, [nodes.length, setNodes]);
 
-  const getCanvasSnapshot = () => ({
-    nodes,
-    edges,
-    viewport,
-  });
+  const getCanvasSnapshot = useCallback(
+    () => ({
+      nodes,
+      edges,
+      viewport,
+    }),
+    [nodes, edges, viewport]
+  );
 
   return {
     nodes,

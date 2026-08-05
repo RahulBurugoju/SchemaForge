@@ -1,24 +1,24 @@
-import React from 'react'
+import React, { memo, useMemo } from 'react'
 import { SlidersHorizontal, MousePointerClick, Table, Columns3, MapPin, Key, Hash, Layers, ArrowDownLeft, ArrowUpRight } from 'lucide-react'
 import { useSelector } from 'react-redux'
-import useCanvas from '../../hooks/useCanvas'
 
 function InspectorPanel({ canvasState }) {
   const selectedNode = useSelector((state) => state.canvas.selectedNode)
-  const fallbackCanvas = useCanvas()
-  const edges = canvasState?.edges || fallbackCanvas.edges || []
+  const edges = canvasState?.edges || []
 
   const tableName = selectedNode?.data?.name || 'Untitled Table'
   const columns = selectedNode?.data?.columns || []
   const posX = Math.round(selectedNode?.position?.x ?? 0)
   const posY = Math.round(selectedNode?.position?.y ?? 0)
 
-  const incomingCount = selectedNode
-    ? edges.filter((edge) => edge.target === selectedNode.id).length
-    : 0
-  const outgoingCount = selectedNode
-    ? edges.filter((edge) => edge.source === selectedNode.id).length
-    : 0
+  const incomingCount = useMemo(
+    () => (selectedNode ? edges.filter((edge) => edge.target === selectedNode.id).length : 0),
+    [edges, selectedNode]
+  )
+  const outgoingCount = useMemo(
+    () => (selectedNode ? edges.filter((edge) => edge.source === selectedNode.id).length : 0),
+    [edges, selectedNode]
+  )
 
   return (
     <aside className="bg-zinc-950/90 border-l border-zinc-800/80 w-72 flex flex-col h-full font-sans text-xs select-none">
@@ -188,4 +188,4 @@ function InspectorPanel({ canvasState }) {
   )
 }
 
-export default InspectorPanel
+export default memo(InspectorPanel)

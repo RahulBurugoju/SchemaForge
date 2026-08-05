@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo, useCallback } from "react";
 import {
   Background,
   Controls,
@@ -8,29 +8,40 @@ import {
 import "@xyflow/react/dist/style.css";
 
 import { nodeTypes } from "./nodeTypes";
-import useCanvas from "../../../hooks/useCanvas";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedNode } from "../../../features/canvas/canvas.Slice";
 
 function CanvasPanel({ canvasState }) {
-  const dispatch = useDispatch()
-    const selectedNode = useSelector(state=> state.canvas.selectedNode)
-  const fallbackCanvas = useCanvas();
-  const { nodes, edges, onNodesChange, onEdgesChange, onConnect, isValidConnection,viewport, setViewport,getCanvasSnapshot } = canvasState || fallbackCanvas;
+  const dispatch = useDispatch();
+  const selectedNode = useSelector((state) => state.canvas.selectedNode);
+  const {
+    nodes,
+    edges,
+    onNodesChange,
+    onEdgesChange,
+    onConnect,
+    isValidConnection,
+    setViewport,
+  } = canvasState || {};
 
-  const onNodeClick = (_,node)=>{
-    // console.log(node)
-      dispatch(setSelectedNode(node))
-  }
+  const onNodeClick = useCallback(
+    (_, node) => {
+      dispatch(setSelectedNode(node));
+    },
+    [dispatch]
+  );
 
-  const onPanelClick = ()=>{
-      dispatch(setSelectedNode(null))
+  const onPanelClick = useCallback(() => {
+    dispatch(setSelectedNode(null));
+  }, [dispatch]);
 
-  }
+  const handleMoveEnd = useCallback(
+    (_, vp) => {
+      setViewport?.(vp);
+    },
+    [setViewport]
+  );
 
-
-
-  // {console.log(getCanvasSnapshot())}
   return (
     <div className="w-full h-full bg-[#090A0F] relative overflow-hidden flex flex-col font-sans select-none border border-slate-800/80  shadow-2xl">
       {/* Main ReactFlow Canvas */}
@@ -45,9 +56,7 @@ function CanvasPanel({ canvasState }) {
           nodeTypes={nodeTypes}
           onNodeClick={onNodeClick}
           onPaneClick={onPanelClick}
-          onMoveEnd={(_,viewport)=>{
-            setViewport(viewport )
-          }}
+          onMoveEnd={handleMoveEnd}
           fitView
           colorMode="dark"
         >
@@ -72,4 +81,4 @@ function CanvasPanel({ canvasState }) {
   );
 }
 
-export default CanvasPanel;
+export default memo(CanvasPanel);

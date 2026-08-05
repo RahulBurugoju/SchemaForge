@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import {
@@ -31,13 +31,13 @@ function WorkspacePage() {
   const canvasState = useCanvas();
   const { nodes,edges, getCanvasSnapshot } = canvasState;
 
-  const handleSave = async () => {
+  const handleSave = useCallback(async () => {
     const canvasData = getCanvasSnapshot();
 
     await dispatch(
       updateProject({ projectId, projectData: { canvasData } }),
     ).unwrap();
-  };
+  }, [dispatch, getCanvasSnapshot, projectId]);
 
   const saveStatus = useAutoSave({
     nodes,

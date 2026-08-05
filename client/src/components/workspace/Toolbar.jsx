@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { memo, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -14,21 +14,17 @@ import {
   Check,
   Loader2
 } from 'lucide-react'
-import useCanvas from '../../hooks/useCanvas'
 
-function Toolbar({ addTable: addTableProp, onSave,autoSaveEnable,
-  setAutoSaveEnable, }) {
+function Toolbar({ addTable, onSave, autoSaveEnable, setAutoSaveEnable }) {
   const navigate = useNavigate()
   const { currentProject } = useSelector((state) => state.project)
-  const defaultCanvas = useCanvas()
-  const addTable = addTableProp || defaultCanvas.addTable
   const projectName = currentProject?.projectName || currentProject?.name || "Inventory System"
   const databaseType = currentProject?.databaseType || "PostgreSQL"
 
   const [isSaving, setIsSaving] = useState(false)
   const [savedSuccess, setSavedSuccess] = useState(false)
 
-  const handleSaveClick = async () => {
+  const handleSaveClick = useCallback(async () => {
     if (!onSave || isSaving) return
     setIsSaving(true)
     setSavedSuccess(false)
@@ -45,7 +41,7 @@ function Toolbar({ addTable: addTableProp, onSave,autoSaveEnable,
     } finally {
       setIsSaving(false)
     }
-  }
+  }, [onSave, isSaving])
 
   return (
     <header className="bg-zinc-950 border-b border-zinc-800/80 px-4 py-2 flex items-center justify-between gap-4 font-sans text-xs select-none">
@@ -174,4 +170,4 @@ function Toolbar({ addTable: addTableProp, onSave,autoSaveEnable,
   )
 }
 
-export default Toolbar
+export default memo(Toolbar)

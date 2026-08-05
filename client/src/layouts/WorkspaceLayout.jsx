@@ -1,12 +1,10 @@
-import React from "react";
+import React, { memo } from "react";
 import Toolbar from "../components/workspace/Toolbar";
 import ExplorerPanel from "../components/workspace/ExplorerPanel";
 import CanvasPanel from "../components/workspace/canvas/CanvasPanel";
 import InspectorPanel from "../components/workspace/InspectorPanel";
 import StatusBar from "../components/workspace/StatusBar";
 import { ReactFlowProvider } from "@xyflow/react";
-import useCanvas from "../hooks/useCanvas";
-import { useDispatch } from "react-redux";
 
 function WorkspaceLayout({
   canvasState,
@@ -44,4 +42,4 @@ function WorkspaceLayout({
   );
 }
 
-export default WorkspaceLayout;
+export default memo(WorkspaceLayout);

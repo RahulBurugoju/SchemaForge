@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { Database, Trash2 } from "lucide-react";
 
 function TableHeader({ name, count = 0, onDelete }) {
@@ -39,4 +39,4 @@ function TableHeader({ name, count = 0, onDelete }) {
   );
 }
 
-export default TableHeader;
+export default memo(TableHeader);

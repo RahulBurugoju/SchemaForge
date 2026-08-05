@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { Database, CheckCircle2, Loader2, AlertCircle, Clock } from 'lucide-react'
 
@@ -9,7 +9,7 @@ function StatusBar({ saveStatus }) {
   const databaseType = currentProject?.databaseType || "PostgreSQL"
   const tableCount = currentProject?.tables?.length || 0
 
-  const getStatusBadge = () => {
+  const statusBadge = useMemo(() => {
     switch (saveStatus) {
       case 'saving':
         return (
@@ -41,7 +41,7 @@ function StatusBar({ saveStatus }) {
           </div>
         )
     }
-  }
+  }, [saveStatus])
 
   return (
     <div className="bg-zinc-950 border-t border-zinc-800/80 px-4 py-1.5 flex items-center justify-between font-mono text-[11px] text-zinc-400 select-none">
@@ -66,7 +66,7 @@ function StatusBar({ saveStatus }) {
 
         <div className="flex items-center gap-1.5">
           <span className="text-zinc-500">Status:</span>
-          {getStatusBadge()}
+          {statusBadge}
         </div>
       </div>
 
@@ -88,4 +88,4 @@ function StatusBar({ saveStatus }) {
   )
 }
 
-export default StatusBar
+export default memo(StatusBar)
