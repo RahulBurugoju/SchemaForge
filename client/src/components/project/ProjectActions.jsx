@@ -1,4 +1,4 @@
-import { ExternalLink, Pencil, Trash2 } from "lucide-react";
+import { ExternalLink, Pencil, Trash2, Download } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Modal from "../modal/Modal";
@@ -11,26 +11,33 @@ function ProjectActions({ project }) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   const handelOpen = () => {
-    if (project._id) {
+    if (project?._id) {
       navigate(`/workspace/${project._id}`);
     } else {
       navigate("/workspace");
     }
   };
+
   const handelEdit = () => {
-    // console.log("Edit : ", project.name);
-    setIsEditOpen(true)
+    setIsEditOpen(true);
   };
 
   const handelDelete = () => {
-    // console.log("Delete : ", project.name);
-    setIsDeleteOpen(true)
+    setIsDeleteOpen(true);
+  };
+
+  const handleExport = () => {
+    if (project?._id) {
+      navigate(`/export/${project._id}`, { state: { project } });
+    } else {
+      navigate("/export", { state: { project } });
+    }
   };
 
   return (
     <div>
-      <div className="flex items-center justify-between gap-2 pt-1">
-        <div className="flex items-center gap-1.5">
+      <div className="flex items-center justify-between gap-2 pt-1 flex-wrap">
+        <div className="flex items-center gap-1.5 flex-wrap">
           <button
             type="button"
             onClick={handelOpen}
@@ -38,6 +45,15 @@ function ProjectActions({ project }) {
           >
             <ExternalLink className="w-3.5 h-3.5 stroke-[2.2]" />
             <span>Open</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleExport}
+            className="px-3 py-1.5 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Export</span>
           </button>
 
           <button
@@ -61,14 +77,14 @@ function ProjectActions({ project }) {
       </div>
 
       {isEditOpen && (
-        <Modal handelCLick = {setIsEditOpen}>
-            <EditProjectModal project={project} onCloseEdit={()=>setIsEditOpen(false)}/>
+        <Modal handelCLick={setIsEditOpen}>
+          <EditProjectModal project={project} onCloseEdit={() => setIsEditOpen(false)} />
         </Modal>
       )}
 
       {isDeleteOpen && (
         <Modal handelCLick={setIsDeleteOpen}>
-            <DeleteProjectDialog project={project} onCloseDelete={()=>setIsDeleteOpen(false)}/>
+          <DeleteProjectDialog project={project} onCloseDelete={() => setIsDeleteOpen(false)} />
         </Modal>
       )}
     </div>

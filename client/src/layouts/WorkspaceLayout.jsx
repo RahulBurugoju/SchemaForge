@@ -1,4 +1,5 @@
 import React, { memo } from "react";
+import { useNavigate } from "react-router-dom";
 import Toolbar from "../components/workspace/Toolbar";
 import ExplorerPanel from "../components/workspace/ExplorerPanel";
 import CanvasPanel from "../components/workspace/canvas/CanvasPanel";
@@ -13,6 +14,16 @@ function WorkspaceLayout({
   autoSaveEnable,
   setAutoSaveEnable,
 }) {
+  const navigate = useNavigate();
+
+  const handleExportNavigate = () => {
+    navigate("/export", {
+      state: {
+        canvasData: { nodes: canvasState.nodes, edges: canvasState.edges },
+      },
+    });
+  };
+
   return (
     <div className="h-screen w-screen bg-black text-zinc-100 flex flex-col font-sans overflow-hidden select-none">
       {/* Top IDE Toolbar */}
@@ -22,6 +33,7 @@ function WorkspaceLayout({
           onSave={handleSave}
           autoSaveEnable={autoSaveEnable}
           setAutoSaveEnable={setAutoSaveEnable}
+          onExport={handleExportNavigate}
         />
       </header>
 

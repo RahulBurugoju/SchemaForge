@@ -54,6 +54,10 @@ const router = createBrowserRouter([
             element: <ExportPage />,
           },
           {
+            path: "export/:projectId",
+            element: <ExportPage />,
+          },
+          {
             path: "settings",
             element: <SettingsPage />,
           },

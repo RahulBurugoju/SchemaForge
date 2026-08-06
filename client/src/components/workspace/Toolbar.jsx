@@ -15,7 +15,7 @@ import {
   Loader2
 } from 'lucide-react'
 
-function Toolbar({ addTable, onSave, autoSaveEnable, setAutoSaveEnable }) {
+function Toolbar({ addTable, onSave, autoSaveEnable, setAutoSaveEnable, onExport }) {
   const navigate = useNavigate()
   const { currentProject } = useSelector((state) => state.project)
   const projectName = currentProject?.projectName || currentProject?.name || "Inventory System"
@@ -42,6 +42,18 @@ function Toolbar({ addTable, onSave, autoSaveEnable, setAutoSaveEnable }) {
       setIsSaving(false)
     }
   }, [onSave, isSaving])
+
+  const handleExportClick = useCallback(() => {
+    if (onExport) {
+      onExport();
+      return;
+    }
+    if (currentProject?._id) {
+      navigate(`/export/${currentProject._id}`, { state: { project: currentProject } });
+    } else {
+      navigate("/export");
+    }
+  }, [onExport, currentProject, navigate]);
 
   return (
     <header className="bg-zinc-950 border-b border-zinc-800/80 px-4 py-2 flex items-center justify-between gap-4 font-sans text-xs select-none">
@@ -132,6 +144,7 @@ function Toolbar({ addTable, onSave, autoSaveEnable, setAutoSaveEnable }) {
 
         <button
           type="button"
+          onClick={handleExportClick}
           className="bg-zinc-900/80 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 rounded-lg px-3 py-1.5 font-medium flex items-center gap-1.5 transition-all cursor-pointer"
         >
           <Download className="w-3.5 h-3.5" />
