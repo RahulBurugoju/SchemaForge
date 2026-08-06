@@ -1,5 +1,1 @@
-export const cloneTemplate = (template) => {
-  return null;
-};
-
-export default cloneTemplate;
+export { default } from "../../features/templates/utils/cloneTemplate.js";

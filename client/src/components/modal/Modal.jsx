@@ -2,7 +2,7 @@ import React from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 
-function Modal({ handelCLick, children }) {
+function Modal({ handelCLick, children, maxWidth = "max-w-4xl" }) {
   const handleClose = (e) => {
     if (e) e.stopPropagation();
     if (handelCLick) {
@@ -21,7 +21,7 @@ function Modal({ handelCLick, children }) {
       {/* Modal Container */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-lg bg-zinc-950/90 backdrop-blur-xl border border-zinc-800/90 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/90 flex flex-col justify-between transition-all overflow-hidden z-10"
+        className={`relative w-full ${maxWidth} bg-zinc-950/90 backdrop-blur-xl border border-zinc-800/90 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/90 flex flex-col justify-between transition-all overflow-hidden z-10`}
       >
         {/* Floating Close Button */}
         <button

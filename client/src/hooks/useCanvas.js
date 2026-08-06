@@ -24,7 +24,7 @@ function useCanvas() {
     setNodes(restored.nodes);
     setEdges(restored.edges);
     setViewport(restored.viewport);
-  }, [currentProject?._id, setNodes, setEdges]);
+  }, [currentProject?._id, currentProject?.canvasData, setNodes, setEdges, setViewport]);
 
   const isValidConnection = useCallback(
     (connection) => validateConnection(connection, edges),

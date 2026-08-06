@@ -12,9 +12,9 @@ import {
 import { ApiError } from "../utils/ApiError.js";
 
 const createProject = asyncHandler(async(req,res)=>{
-  const {projectName,description,databaseType,isArchived} = req.body;
+  const {projectName,description,databaseType,isArchived,canvasData} = req.body;
   const userId = req.user._id;
-  const response = await createProjectService(userId,projectName,description,databaseType,isArchived);
+  const response = await createProjectService(userId,projectName,description,databaseType,isArchived,canvasData);
 
   return res.status(201).json(
     new ApiResponse(201,response,"Successfully created a New Project")

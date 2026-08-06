@@ -1,5 +1,1 @@
-export const generateIds = (nodes, edges) => {
-  return { nodes, edges };
-};
-
-export default generateIds;
+export { default } from "../../features/templates/utils/generateIds.js";

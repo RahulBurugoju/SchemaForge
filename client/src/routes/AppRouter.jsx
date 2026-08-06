@@ -5,6 +5,7 @@ import DashboardPage from "../pages/DashboardPage.jsx";
 import LoginPage from "../pages/LoginPage.jsx";
 import WorkspacePage from "../pages/WorkspacePage.jsx";
 import ExportPage from "../pages/ExportPage.jsx";
+import TemplatesPage from "../pages/TemplatesPage.jsx";
 import SettingsPage from "../pages/SettingsPage.jsx";
 import NotFoundPage from "../pages/NotFoundPage.jsx";
 import RootLayout from "../layouts/RootLayout.jsx";
@@ -56,6 +57,10 @@ const router = createBrowserRouter([
           {
             path: "export/:projectId",
             element: <ExportPage />,
+          },
+          {
+            path: "templates",
+            element: <TemplatesPage />,
           },
           {
             path: "settings",

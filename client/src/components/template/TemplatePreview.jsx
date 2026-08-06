@@ -1,7 +1,1 @@
-import React from 'react';
-
-const TemplatePreview = ({ template }) => {
-  return <div>TemplatePreview</div>;
-};
-
-export default TemplatePreview;
+export { default } from "../../features/templates/components/TemplatePreview.jsx";

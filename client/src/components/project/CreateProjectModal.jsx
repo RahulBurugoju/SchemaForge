@@ -3,12 +3,16 @@ import { useDispatch } from "react-redux";
 import { createProject } from "../../features/project/project.Thunk";
 import { useNavigate } from "react-router-dom";
 import { Sparkles, FolderPlus, Database, CheckCircle2, AlertCircle } from "lucide-react";
+import TemplateSelector from "../../features/templates/components/TemplateSelector";
+import createProjectFromTemplate from "../../features/templates/utils/createProjectFromTemplate";
+import blankTemplate from "../../features/templates/data/blankTemplate";
 
-function CreateProjectModal({ onClose }) {
+function CreateProjectModal({ onClose, initialTemplate }) {
+  const [selectedTemplate, setSelectedTemplate] = useState(initialTemplate || blankTemplate);
   const [formData, setFormData] = useState({
-    projectName: "",
-    description: "",
-    databaseType: "mysql",
+    projectName: initialTemplate?.name ? `${initialTemplate.name} Project` : "",
+    description: initialTemplate?.description || "",
+    databaseType: initialTemplate?.databaseType || "mysql",
     isArchived: false,
   });
   const [error, setError] = useState("");
@@ -17,6 +21,13 @@ function CreateProjectModal({ onClose }) {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const handleTemplateSelect = (template) => {
+    setSelectedTemplate(template);
+    if (template?.databaseType) {
+      setFormData((prev) => ({ ...prev, databaseType: template.databaseType }));
+    }
+  };
 
   const handelChange = (e) => {
     const { name, value } = e.target;
@@ -41,6 +52,7 @@ function CreateProjectModal({ onClose }) {
       databaseType: "mysql",
       isArchived: false,
     });
+    setSelectedTemplate(blankTemplate);
     setError("");
     setSuccessMsg("");
     if (onClose) {
@@ -55,7 +67,12 @@ function CreateProjectModal({ onClose }) {
     setIsSubmitting(true);
 
     try {
-      const resultAction = await dispatch(createProject(formData));
+      const payload = createProjectFromTemplate(selectedTemplate, formData.projectName, {
+        description: formData.description,
+        databaseType: formData.databaseType,
+      });
+
+      const resultAction = await dispatch(createProject(payload));
 
       if (createProject.fulfilled.match(resultAction)) {
         setSuccessMsg("New project created successfully");
@@ -84,7 +101,7 @@ function CreateProjectModal({ onClose }) {
   };
 
   return (
-    <div className="text-zinc-100 font-sans space-y-6">
+    <div className="text-zinc-100 font-sans space-y-6 max-h-[85vh] overflow-y-auto pr-1 w-full">
       {/* Modal Form Header */}
       <div className="space-y-1 pr-6">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-medium bg-zinc-900 text-zinc-300 border border-zinc-800 mb-2">
@@ -95,7 +112,7 @@ function CreateProjectModal({ onClose }) {
           Create New Project
         </h2>
         <p className="text-zinc-400 text-xs leading-relaxed">
-          Initialize a new database model to configure entities, relationships, and export scripts.
+          Select a template or start from scratch with an empty canvas to configure database entities.
         </p>
       </div>
 
@@ -116,6 +133,12 @@ function CreateProjectModal({ onClose }) {
       )}
 
       <form onSubmit={handelSubmit} className="space-y-4">
+        {/* Template Selector Section */}
+        <TemplateSelector
+          selectedTemplate={selectedTemplate}
+          onSelectTemplate={handleTemplateSelect}
+        />
+
         {/* Project Name Field */}
         <div>
           <label htmlFor="projectName" className="block text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-1.5">
@@ -214,4 +237,3 @@ function CreateProjectModal({ onClose }) {
 }
 
 export default CreateProjectModal;
-

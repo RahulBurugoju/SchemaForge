@@ -4,7 +4,7 @@ import { mongoose,isValidObjectId } from "mongoose"
 import { ApiError } from "../utils/ApiError.js"
 
 
-const createProjectService = async (userId,projectName,description,databaseType,isArchived)=>{
+const createProjectService = async (userId,projectName,description,databaseType,isArchived,canvasData)=>{
     const existedProject = await Project.findOne({
         owner:userId,
         projectName
@@ -17,12 +17,17 @@ const createProjectService = async (userId,projectName,description,databaseType,
         throw new ApiError(400,"Invalid user Id")
     }
 
-    const project =await Project.create({
+    const project = await Project.create({
         projectName,
         description,
         databaseType,
         owner:userId,
-        isArchived
+        isArchived,
+        canvasData: canvasData || {
+            nodes: [],
+            edges: [],
+            viewport: { x: 0, y: 0, zoom: 1 },
+        },
     })
 
     const createdProject = await Project.findById(project._id);

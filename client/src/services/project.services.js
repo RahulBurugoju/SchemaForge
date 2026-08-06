@@ -5,7 +5,8 @@ const createProject = async(projectDetails)=>{
         projectName: projectDetails.projectName || projectDetails.name,
         description: projectDetails.description,
         databaseType: projectDetails.databaseType,
-        isArchived: projectDetails.isArchived
+        isArchived: projectDetails.isArchived,
+        canvasData: projectDetails.canvasData,
     };
     const response = await api.post('/projects/create-project', payload);
     return response.data;
