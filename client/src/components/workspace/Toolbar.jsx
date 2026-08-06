@@ -88,7 +88,11 @@ function Toolbar({ addTable, setNodes, setEdges, onSave, autoSaveEnable, setAuto
         <div className="h-4 w-px bg-zinc-800" />
 
         <div className="flex items-center gap-2">
-          <div className="p-1 rounded bg-zinc-900 text-indigo-400 border border-zinc-800">
+          <div
+            onClick={() => navigate('/')}
+            className="p-1 rounded bg-zinc-900 text-indigo-400 border border-zinc-800 cursor-pointer hover:bg-zinc-800 hover:text-indigo-300 transition-colors"
+            title="Go to Home / Landing Page"
+          >
             <Layers className="w-3.5 h-3.5" />
           </div>
           <span className="font-semibold text-white tracking-tight max-w-[200px] truncate">

@@ -1,4 +1,4 @@
-import { registerUserService, loginUserService, refreshAccessTokenService,logoutService,getCurrentUserService } from "../services/auth.service.js";
+import { registerUserService, loginUserService, refreshAccessTokenService,logoutService,getCurrentUserService, updateUserProfileService } from "../services/auth.service.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
@@ -85,4 +85,15 @@ const getCurrentUser = asyncHandler ( async(req,res)=>{
                 )
 })
 
-export { registerUser, loginUser, refreshAccessToken, logoutUser ,getCurrentUser};
+const updateUserProfile = asyncHandler(async (req, res) => {
+    const userId = req.user?._id;
+    const { fullName, userName, email } = req.body;
+
+    const response = await updateUserProfileService(userId, { fullName, userName, email });
+
+    return res.status(200).json(
+        new ApiResponse(200, response, "Profile updated successfully")
+    );
+});
+
+export { registerUser, loginUser, refreshAccessToken, logoutUser, getCurrentUser, updateUserProfile };

@@ -6,6 +6,7 @@ import LoginPage from "../pages/LoginPage.jsx";
 import WorkspacePage from "../pages/WorkspacePage.jsx";
 import ExportPage from "../pages/ExportPage.jsx";
 import TemplatesPage from "../pages/TemplatesPage.jsx";
+import ProfilePage from "../pages/ProfilePage.jsx";
 import NotFoundPage from "../pages/NotFoundPage.jsx";
 import RootLayout from "../layouts/RootLayout.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
           {
             path: "dashboard",
             element: <DashboardPage />,
+          },
+          {
+            path: "profile",
+            element: <ProfilePage />,
           },
           {
             path: "workspace",

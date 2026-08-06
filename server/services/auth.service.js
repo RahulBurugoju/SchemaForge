@@ -138,13 +138,47 @@ const getCurrentUserService = async (userId)=>{
         return user;
 }
 
+const updateUserProfileService = async (userId, { fullName, userName, email }) => {
+    if (!isValidObjectId(userId)) {
+        throw new ApiError(400, "Invalid user id");
+    }
+
+    const existingUser = await User.findOne({
+        _id: { $ne: userId },
+        $or: [{ email }, { userName }]
+    });
+
+    if (existingUser) {
+        throw new ApiError(409, "Username or email is already taken by another user");
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        {
+            $set: {
+                fullName,
+                userName,
+                email
+            }
+        },
+        { new: true, runValidators: true }
+    ).select("-password -refreshToken");
+
+    if (!updatedUser) {
+        throw new ApiError(404, "User not found");
+    }
+
+    return updatedUser;
+};
+
 export {
     generateAccessAndRefreshTokens,
     registerUserService,
     loginUserService,
     refreshAccessTokenService,
     logoutService,
-    getCurrentUserService
+    getCurrentUserService,
+    updateUserProfileService
 };
 
 

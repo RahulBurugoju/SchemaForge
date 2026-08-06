@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../features/auth/authThunk.js";
 import { clearError } from "../features/auth/authSlice.js";
 import { Link, useNavigate } from "react-router-dom";
-import { Loader2 } from "lucide-react";
+import { Loader2, Home } from "lucide-react";
 
 function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -96,6 +96,16 @@ function RegisterPage() {
 
   return (
     <div className="min-h-screen bg-black text-zinc-100 flex items-center justify-center p-4 relative overflow-hidden font-sans selection:bg-indigo-600 selection:text-white">
+      {/* Top Left Home Redirect Button */}
+      <button
+        type="button"
+        onClick={() => navigate("/")}
+        className="absolute top-6 left-6 z-20 flex items-center gap-2 px-3 py-2 bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-xs font-medium text-zinc-300 hover:text-white transition-all cursor-pointer shadow-lg"
+        title="Return to Home Landing Page"
+      >
+        <Home className="w-4 h-4 text-indigo-400" />
+        <span>Home</span>
+      </button>
       {/* Overhead radial ambient light sources */}
       <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-indigo-600/15 blur-[160px] rounded-full pointer-events-none -z-0" />
       <div className="absolute bottom-10 right-1/4 w-[500px] h-[250px] bg-purple-600/10 blur-[180px] rounded-full pointer-events-none -z-0" />

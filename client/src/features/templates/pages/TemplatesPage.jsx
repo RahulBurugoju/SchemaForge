@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Search, Sparkles, Filter, Database, Layers, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Search, Sparkles, Filter, Database, Layers, RefreshCw, Home } from 'lucide-react';
 import useTemplates from '../hooks/useTemplates.js';
 import TemplateGrid from '../components/TemplateGrid.jsx';
 import TemplatePreview from '../components/TemplatePreview.jsx';
@@ -72,6 +72,16 @@ function TemplatesPage() {
         {/* Top Header Navigation */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-zinc-800/80 pb-6">
           <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => navigate('/')}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-900 border border-zinc-800/80 transition-all cursor-pointer text-xs font-medium"
+              title="Home / Landing Page"
+            >
+              <Home className="w-4 h-4 text-indigo-400" />
+              <span>Home</span>
+            </button>
+
             <button
               type="button"
               onClick={() => navigate('/dashboard')}

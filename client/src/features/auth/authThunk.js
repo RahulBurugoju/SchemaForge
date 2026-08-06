@@ -48,4 +48,14 @@ const getCurrentUserThunk = createAsyncThunk("auth/getCurrentUser",async(_,thunk
     }
 });
 
-export {loginUser,logoutUser,registerUser,refreshUserAccessToken,getCurrentUserThunk}
+const updateUserProfileThunk = createAsyncThunk("auth/updateProfile", async (profileData, thunkAPI) => {
+    try {
+        return await authServices.updateUserProfile(profileData);
+    } catch (error) {
+        return thunkAPI.rejectWithValue(
+            error.response?.data?.message || "Profile update failed"
+        );
+    }
+});
+
+export { loginUser, logoutUser, registerUser, refreshUserAccessToken, getCurrentUserThunk, updateUserProfileThunk }

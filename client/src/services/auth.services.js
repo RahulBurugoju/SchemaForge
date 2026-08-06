@@ -26,12 +26,19 @@ const getCurrentUser = async()=>{
     const response = await api.get("/auth/me");
     return response.data;
 }
+
+const updateUserProfile = async (profileData) => {
+    const response = await api.patch("/auth/profile", profileData);
+    return response.data;
+}
+
 const authServices = {
     register,
     login,
     logout,
     refreshAccessToken,
-    getCurrentUser
+    getCurrentUser,
+    updateUserProfile
 }
 
 export default authServices

@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
+import DashboardSidebar from "../components/dashboard/DashboardSidebar";
 import DashboardHeader from "../components/dashboard/DashboardHeader";
 import DashboardStats from "../components/dashboard/DashboardStats";
 import DashboardSearchBar from "../components/dashboard/DashboardSearchBar";
@@ -90,31 +91,36 @@ function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-zinc-100 relative font-sans">
-      {/* Subtle top overhead radial light source */}
-      <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-zinc-800/10 blur-[150px] rounded-full pointer-events-none -z-0" />
+    <div className="h-screen w-screen bg-black text-zinc-100 flex overflow-hidden font-sans">
+      {/* Sidebar Navigation */}
+      <DashboardSidebar />
 
-      {/* Main Content Area */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
-        <DashboardHeader user={user} onCreate={handleCreate} />
-        <DashboardStats projects={projects} />
+      {/* Main Scrollable Content */}
+      <div className="flex-1 overflow-y-auto relative">
+        {/* Subtle top overhead radial light source */}
+        <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-zinc-800/10 blur-[150px] rounded-full pointer-events-none -z-0" />
 
-        <DashboardSearchBar
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          selectedEngine={selectedEngine}
-          setSelectedEngine={setSelectedEngine}
-        />
+        <main className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+          <DashboardHeader user={user} onCreate={handleCreate} />
+          <DashboardStats projects={projects} />
 
-        <ProjectGrid
-          projects={filteredProjects}
-          totalProjectCount={projects.length}
-          onCreate={handleCreate}
-          onClearFilters={handleClearFilters}
-          searchQuery={searchQuery}
-          selectedEngine={selectedEngine}
-        />
-      </main>
+          <DashboardSearchBar
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            selectedEngine={selectedEngine}
+            setSelectedEngine={setSelectedEngine}
+          />
+
+          <ProjectGrid
+            projects={filteredProjects}
+            totalProjectCount={projects.length}
+            onCreate={handleCreate}
+            onClearFilters={handleClearFilters}
+            searchQuery={searchQuery}
+            selectedEngine={selectedEngine}
+          />
+        </main>
+      </div>
 
       {isOpen && (
         <Modal handelCLick={setIsOpen} maxWidth="max-w-4xl">

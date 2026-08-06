@@ -1,5 +1,5 @@
 import React from "react";
-import { Sparkles, FolderPlus, LogOut, Layout } from "lucide-react";
+import { Sparkles, FolderPlus, LogOut, Layout, Home } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../../features/auth/authThunk";
@@ -24,6 +24,16 @@ function DashboardHeader({ user, onCreate }) {
       </div>
 
       <div className="flex items-center gap-3 shrink-0 flex-wrap">
+        <button
+          type="button"
+          onClick={() => navigate("/")}
+          className="bg-zinc-900/80 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 rounded-xl px-3 py-2.5 font-medium transition-all text-sm flex items-center gap-2 cursor-pointer"
+          title="Return to Home Landing Page"
+        >
+          <Home className="w-4 h-4 text-indigo-400" />
+          <span className="hidden sm:inline">Home</span>
+        </button>
+
         <button
           type="button"
           onClick={() => navigate("/templates")}
