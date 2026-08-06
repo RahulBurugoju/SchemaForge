@@ -74,8 +74,8 @@ function DashboardStats({ projects = [] }) {
         ))}
       </div>
 
-      {/* Visual Precision Search & Filter Bar */}
-      <DashboardSearchBar />
+      {/* Visual Precision Search & Filter Bar
+      <DashboardSearchBar /> */}
     </div>
   );
 }

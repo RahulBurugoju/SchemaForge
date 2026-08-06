@@ -1,29 +1,59 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import DashboardHeader from "../components/dashboard/DashboardHeader";
 import DashboardStats from "../components/dashboard/DashboardStats";
+import DashboardSearchBar from "../components/dashboard/DashboardSearchBar";
 import ProjectGrid from "../components/dashboard/ProjectGrid";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProjects } from "../features/project/project.Thunk";
 import { Loader2, AlertCircle, RefreshCw } from "lucide-react";
 import Modal from "../components/modal/Modal";
 import CreateProjectModal from "../components/project/CreateProjectModal";
-function DashboardPage() {
-  const dispatch = useDispatch()
-  const { user } = useSelector((state) => state.auth);
-  const {projects,loading,error} = useSelector(state=>state.project)
-  
-  const [isOpen,setIsOpen] = useState(false)
-  
 
-  useEffect(()=>{
-    dispatch(fetchProjects())
-  },[dispatch])
+function DashboardPage() {
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+  const { projects = [], loading, error } = useSelector((state) => state.project || {});
+  
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedEngine, setSelectedEngine] = useState("All");
+
+  useEffect(() => {
+    dispatch(fetchProjects());
+  }, [dispatch]);
   
   const handleCreate = () => {
-    setIsOpen(true)
+    setIsOpen(true);
   };
 
-  if (loading) {
+  const handleClearFilters = () => {
+    setSearchQuery("");
+    setSelectedEngine("All");
+  };
+
+  // Filter projects by name, description, databaseType, and engine pill selection
+  const filteredProjects = useMemo(() => {
+    return (projects || []).filter((project) => {
+      const name = project.projectName || project.name || "";
+      const description = project.description || "";
+      const dbType = project.databaseType || "";
+
+      const query = searchQuery.trim().toLowerCase();
+      const matchesQuery =
+        !query ||
+        name.toLowerCase().includes(query) ||
+        description.toLowerCase().includes(query) ||
+        dbType.toLowerCase().includes(query);
+
+      const matchesEngine =
+        selectedEngine === "All" ||
+        dbType.toLowerCase() === selectedEngine.toLowerCase();
+
+      return matchesQuery && matchesEngine;
+    });
+  }, [projects, searchQuery, selectedEngine]);
+
+  if (loading && (!projects || projects.length === 0)) {
     return (
       <div className="min-h-screen bg-black text-zinc-100 flex items-center justify-center p-4 relative font-sans">
         <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-zinc-800/10 blur-[150px] rounded-full pointer-events-none" />
@@ -35,7 +65,7 @@ function DashboardPage() {
     );
   }
 
-  if (error) {
+  if (error && (!projects || projects.length === 0)) {
     return (
       <div className="min-h-screen bg-black text-zinc-100 flex items-center justify-center p-4 relative font-sans">
         <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-zinc-800/10 blur-[150px] rounded-full pointer-events-none" />
@@ -66,16 +96,31 @@ function DashboardPage() {
 
       {/* Main Content Area */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
-        <DashboardHeader  user={user} onCreate={handleCreate} />
-        <DashboardStats projects={projects} 
+        <DashboardHeader user={user} onCreate={handleCreate} />
+        <DashboardStats projects={projects} />
+
+        <DashboardSearchBar
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          selectedEngine={selectedEngine}
+          setSelectedEngine={setSelectedEngine}
         />
-        <ProjectGrid projects={projects}/>
+
+        <ProjectGrid
+          projects={filteredProjects}
+          totalProjectCount={projects.length}
+          onCreate={handleCreate}
+          onClearFilters={handleClearFilters}
+          searchQuery={searchQuery}
+          selectedEngine={selectedEngine}
+        />
       </main>
 
       {isOpen && (
-        <Modal handelCLick = {setIsOpen}>
-          <CreateProjectModal onClose={()=>setIsOpen(false)}/>
-        </Modal>)}
+        <Modal handelCLick={setIsOpen} maxWidth="max-w-4xl">
+          <CreateProjectModal onClose={() => setIsOpen(false)} />
+        </Modal>
+      )}
     </div>
   );
 }
