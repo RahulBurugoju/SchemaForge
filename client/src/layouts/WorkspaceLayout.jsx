@@ -30,6 +30,8 @@ function WorkspaceLayout({
       <header className="shrink-0 z-30">
         <Toolbar
           addTable={canvasState.addTable}
+          setNodes={canvasState.setNodes}
+          setEdges={canvasState.setEdges}
           onSave={handleSave}
           autoSaveEnable={autoSaveEnable}
           setAutoSaveEnable={setAutoSaveEnable}
@@ -48,7 +50,7 @@ function WorkspaceLayout({
 
       {/* Bottom Status Bar */}
       <footer className="shrink-0 z-30">
-        <StatusBar saveStatus={saveStatus} onRetry={handleSave} />
+        <StatusBar saveStatus={saveStatus} onRetry={handleSave} canvasState={canvasState} />
       </footer>
     </div>
   );

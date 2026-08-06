@@ -5,17 +5,21 @@ import {
   ArrowLeft,
   Plus,
   Link2,
-  Undo2,
-  Redo2,
   Save,
   Download,
   Database,
   Layers,
   Check,
-  Loader2
+  Loader2,
+  Sparkles,
+  LayoutGrid
 } from 'lucide-react'
+import Modal from '../modal/Modal.jsx';
+import TemplateSelector from '../../features/templates/components/TemplateSelector.jsx';
+import cloneTemplate from '../../features/templates/utils/cloneTemplate.js';
+import generateIds from '../../features/templates/utils/generateIds.js';
 
-function Toolbar({ addTable, onSave, autoSaveEnable, setAutoSaveEnable, onExport }) {
+function Toolbar({ addTable, setNodes, setEdges, onSave, autoSaveEnable, setAutoSaveEnable, onExport }) {
   const navigate = useNavigate()
   const { currentProject } = useSelector((state) => state.project)
   const projectName = currentProject?.projectName || currentProject?.name || "Inventory System"
@@ -23,6 +27,7 @@ function Toolbar({ addTable, onSave, autoSaveEnable, setAutoSaveEnable, onExport
 
   const [isSaving, setIsSaving] = useState(false)
   const [savedSuccess, setSavedSuccess] = useState(false)
+  const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false)
 
   const handleSaveClick = useCallback(async () => {
     if (!onSave || isSaving) return
@@ -54,6 +59,17 @@ function Toolbar({ addTable, onSave, autoSaveEnable, setAutoSaveEnable, onExport
       navigate("/export");
     }
   }, [onExport, currentProject, navigate]);
+
+  const handleSelectTemplateInWorkspace = useCallback((template) => {
+    if (!template) return;
+    const cloned = cloneTemplate(template);
+    const processed = generateIds(cloned);
+    if (processed?.canvasData) {
+      setNodes?.(processed.canvasData.nodes || []);
+      setEdges?.(processed.canvasData.edges || []);
+    }
+    setIsTemplateModalOpen(false);
+  }, [setNodes, setEdges]);
 
   return (
     <header className="bg-zinc-950 border-b border-zinc-800/80 px-4 py-2 flex items-center justify-between gap-4 font-sans text-xs select-none">
@@ -87,7 +103,16 @@ function Toolbar({ addTable, onSave, autoSaveEnable, setAutoSaveEnable, onExport
 
       {/* Right: IDE Action Toolbar Controls */}
       <div className="flex items-center gap-2">
-       
+        {/* Templates Selector Button */}
+        <button
+          type="button"
+          onClick={() => setIsTemplateModalOpen(true)}
+          className="bg-zinc-900/80 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 rounded-lg px-3 py-1.5 font-medium flex items-center gap-1.5 transition-all cursor-pointer"
+          title="Choose Starter Schema Template"
+        >
+          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+          <span>Templates</span>
+        </button>
 
         <div className="h-4 w-px bg-zinc-800" />
 
@@ -163,6 +188,36 @@ function Toolbar({ addTable, onSave, autoSaveEnable, setAutoSaveEnable, onExport
           )}
         </button>
       </div>
+
+      {/* Workspace Template Selector Modal */}
+      {isTemplateModalOpen && (
+        <Modal handelCLick={() => setIsTemplateModalOpen(false)} maxWidth="max-w-4xl">
+          <div className="space-y-4 text-left">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <div className="flex items-center gap-2">
+                <LayoutGrid className="w-5 h-5 text-indigo-400" />
+                <h2 className="text-base font-bold text-white tracking-tight">Load Starter Schema Template</h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsTemplateModalOpen(false);
+                  navigate('/templates');
+                }}
+                className="px-3 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-medium rounded-lg transition-colors cursor-pointer"
+              >
+                Open Gallery
+              </button>
+            </div>
+
+            <p className="text-xs text-zinc-400">
+              Select a starter template to populate your active canvas with prebuilt tables, data types, and relationships.
+            </p>
+
+            <TemplateSelector onSelectTemplate={handleSelectTemplateInWorkspace} />
+          </div>
+        </Modal>
+      )}
     </header>
   )
 }

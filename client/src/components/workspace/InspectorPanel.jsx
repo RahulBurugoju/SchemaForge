@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useMemo, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   SlidersHorizontal,
   MousePointerClick,
@@ -62,7 +62,7 @@ function InspectorPanel({ canvasState }) {
     setNewName(liveSelectedNode?.data?.name || "");
   }, [liveSelectedNode?.id, liveSelectedNode?.data?.name]);
 
-  const handleNameChange = (e) => {
+  const handleNameChange = useCallback((e) => {
     if (e) e.preventDefault();
     if (!liveSelectedNode?.id) return;
 
@@ -74,9 +74,9 @@ function InspectorPanel({ canvasState }) {
     if (updatedNode) {
       dispatch(setSelectedNode(updatedNode));
     }
-  };
+  }, [liveSelectedNode?.id, newName, nodes, setNodes, dispatch]);
 
-  const handleDuplicate = (e) => {
+  const handleDuplicate = useCallback((e) => {
     if (e) e.preventDefault();
     if (!liveSelectedNode?.id) return;
 
@@ -88,9 +88,9 @@ function InspectorPanel({ canvasState }) {
     if (duplicatedNode && duplicatedNode.id !== liveSelectedNode.id) {
       dispatch(setSelectedNode(duplicatedNode));
     }
-  };
+  }, [liveSelectedNode?.id, nodes, setNodes, dispatch]);
 
-  const handleDelete = (e) => {
+  const handleDelete = useCallback((e) => {
     if (e) e.preventDefault();
     if (!liveSelectedNode?.id) return;
 
@@ -105,9 +105,9 @@ function InspectorPanel({ canvasState }) {
 
     // Clear Redux selectedNode so Inspector closes / shows empty state
     dispatch(setSelectedNode(null));
-  };
+  }, [liveSelectedNode?.id, nodes, edges, setNodes, setEdges, dispatch]);
 
-  const handleAddColumn = (e) => {
+  const handleAddColumn = useCallback((e) => {
     if (e) e.preventDefault();
     if (!liveSelectedNode?.id) return;
 
@@ -118,9 +118,9 @@ function InspectorPanel({ canvasState }) {
     if (updatedNode) {
       dispatch(setSelectedNode(updatedNode));
     }
-  };
+  }, [liveSelectedNode?.id, nodes, setNodes, dispatch]);
 
-  const handleDeleteColumn = (columnId) => {
+  const handleDeleteColumn = useCallback((columnId) => {
     if (!liveSelectedNode?.id) return;
 
     const { nodes: updatedNodes, edges: updatedEdges } = deleteColumn(
@@ -137,9 +137,9 @@ function InspectorPanel({ canvasState }) {
     if (updatedNode) {
       dispatch(setSelectedNode(updatedNode));
     }
-  };
+  }, [liveSelectedNode?.id, nodes, edges, setNodes, setEdges, dispatch]);
 
-  const handleUpdateColumn = (columnId, updates) => {
+  const handleUpdateColumn = useCallback((columnId, updates) => {
     if (!liveSelectedNode?.id) return;
 
     const updatedNodes = updateColumn(
@@ -155,7 +155,7 @@ function InspectorPanel({ canvasState }) {
     if (updatedNode) {
       dispatch(setSelectedNode(updatedNode));
     }
-  };
+  }, [liveSelectedNode?.id, nodes, setNodes, dispatch]);
 
   return (
     <aside className="bg-zinc-950/90 border-l border-zinc-800/80 w-82 flex flex-col h-full font-sans text-xs select-none">

@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useCallback } from "react";
 import TableHeader from "./TableHeader";
 import ColumnItem from "./ColumnItem";
 import { Plus } from "lucide-react";
@@ -13,7 +13,7 @@ function TableNode({ id, data, selected }) {
   const dispatch = useDispatch();
   const selectedNode = useSelector((state) => state.canvas.selectedNode);
 
-  const handleDelete = () => {
+  const handleDelete = useCallback(() => {
     if (typeof deleteElements === "function") {
       deleteElements({ nodes: [{ id }] });
     } else if (typeof setNodes === "function") {
@@ -23,9 +23,9 @@ function TableNode({ id, data, selected }) {
     if (selectedNode?.id === id) {
       dispatch(setSelectedNode(null));
     }
-  };
+  }, [id, deleteElements, setNodes, selectedNode?.id, dispatch]);
 
-  const handleAddColumn = () => {
+  const handleAddColumn = useCallback(() => {
     setNodes((nds) => {
       const updatedNodes = addColumn(nds, id);
       if (selectedNode?.id === id) {
@@ -34,7 +34,7 @@ function TableNode({ id, data, selected }) {
       }
       return updatedNodes;
     });
-  };
+  }, [id, setNodes, selectedNode?.id, dispatch]);
 
   return (
     <div

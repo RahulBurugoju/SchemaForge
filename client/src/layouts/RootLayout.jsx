@@ -10,7 +10,6 @@ function RootLayout() {
         <Link to="/dashboard">Dashboard</Link>
         <Link to="/workspace">Workspace</Link>
         <Link to="/export">Export</Link>
-        <Link to="/settings">Settings</Link>
       </nav>
 
       <Outlet />

@@ -26,12 +26,6 @@ function ProjectCard({ project }) {
       navigate('/workspace')
     }
   }
-    const handelEdit=()=>{
-      console.log("Edit")
-    }
-    const handelDelete=()=>{
-      console.log("Delete")
-    }
   return (
     <div className="group bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-5 hover:border-zinc-700 hover:bg-zinc-900/70 hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between space-y-4">
       <div className="space-y-3">

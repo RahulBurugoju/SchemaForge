@@ -22,6 +22,9 @@ const authSlice = createSlice({
             state.error = null;
             state.tokens = null;
         },
+        clearError: (state) => {
+            state.error = null;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -48,6 +51,7 @@ const authSlice = createSlice({
                 state.loading = false;
                 state.user = action.payload?.data?.user;
                 state.isAuthenticated = true;
+                state.error = null;
              })
             .addCase(loginUser.rejected, (state, action) => {
                 state.loading = false;
@@ -86,8 +90,8 @@ const authSlice = createSlice({
              })
              //----------------------------get current user ----------------------------------
             .addCase(getCurrentUserThunk.pending, (state) => {
-                state.loading = true,
-                    state.error = null
+                state.loading = true;
+                state.error = null;
                 state.initializing = true;
             })
             .addCase(getCurrentUserThunk.fulfilled, (state, action) => { 
@@ -96,15 +100,15 @@ const authSlice = createSlice({
                 state.isAuthenticated=true;
                 state.error=null;
             })
-            .addCase(getCurrentUserThunk.rejected, (state, action) => {
+            .addCase(getCurrentUserThunk.rejected, (state) => {
                 state.initializing = false;
-                state.isAuthenticated=false;
+                state.isAuthenticated = false;
                 state.user = null;
-                state.error = action.payload;
-                state.loading=false
+                state.error = null;
+                state.loading = false;
              })
     }
 });
 
-export const {clearAuth} = authSlice.actions;
+export const { clearAuth, clearError } = authSlice.actions;
 export default authSlice.reducer;

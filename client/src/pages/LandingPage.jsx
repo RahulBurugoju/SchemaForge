@@ -106,7 +106,7 @@ module.exports = {
             <a href="#features" className="hover:text-white transition-colors">Features</a>
             <a href="#generators" className="hover:text-white transition-colors">Generators</a>
             <a href="#templates" className="hover:text-white transition-colors">Templates</a>
-            <a href="#code" className="hover:text-white transition-colors">Live DDL</a>
+            <a href="#code" className="hover:text-white transition-colors">Live Code</a>
           </nav>
 
           <div className="flex items-center gap-3">
@@ -383,8 +383,8 @@ module.exports = {
       {/* Code Generator Live Preview Section */}
       <section id="code" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8 border-t border-zinc-800/80">
         <div className="text-center space-y-3">
-          <h2 className="text-xs font-semibold text-indigo-400 uppercase tracking-widest">Multi-Database DDL Preview</h2>
-          <p className="text-3xl font-extrabold text-white tracking-tight">Clean DDL Code Generated in Real-Time</p>
+          <h2 className="text-xs font-semibold text-indigo-400 uppercase tracking-widest">Multi-Database Code Generator</h2>
+          <p className="text-3xl font-extrabold text-white tracking-tight">Production SQL DDL & Schemas Generated Live</p>
         </div>
 
         <div className="max-w-4xl mx-auto bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-4">

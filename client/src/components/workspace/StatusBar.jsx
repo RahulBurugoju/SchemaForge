@@ -2,12 +2,12 @@ import React, { memo, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { Database, CheckCircle2, Loader2, AlertCircle, Clock } from 'lucide-react'
 
-function StatusBar({ saveStatus, onRetry }) {
+function StatusBar({ saveStatus, onRetry, canvasState }) {
   const { currentProject } = useSelector((state) => state.project)
 
-  const projectName = currentProject?.projectName || currentProject?.name || "Inventory System"
+  const projectName = currentProject?.projectName || currentProject?.name || "Untitled Model"
   const databaseType = currentProject?.databaseType || "PostgreSQL"
-  const tableCount = currentProject?.tables?.length || 0
+  const tableCount = canvasState?.nodes?.length ?? (currentProject?.canvasData?.nodes?.length || 0)
 
   const statusBadge = useMemo(() => {
     switch (saveStatus) {
