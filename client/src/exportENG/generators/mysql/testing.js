@@ -44,3 +44,9 @@ console.log(exportSchema(relationalCanvas, "postgresql"));
 
 console.log("\n=== SQLITE OUTPUT ===");
 console.log(exportSchema(relationalCanvas, "sqlite"));
+
+console.log("\n=== SQL SERVER OUTPUT ===");
+console.log(exportSchema(relationalCanvas, "sqlserver"));
+
+console.log("\n=== MONGODB (MONGOOSE) OUTPUT ===");
+console.log(exportSchema(relationalCanvas, "mongodb"));
