@@ -39,7 +39,7 @@ function WorkspaceLayout({
 
       {/* Main Split Layout: Explorer (Left) | Canvas (Center) | Inspector (Right) */}
       <main className="flex-1 flex overflow-hidden relative">
-        <ExplorerPanel />
+        <ExplorerPanel canvasState={canvasState} />
         <ReactFlowProvider>
           <CanvasPanel canvasState={canvasState} />
         </ReactFlowProvider>

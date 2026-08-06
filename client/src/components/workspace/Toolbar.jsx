@@ -87,23 +87,7 @@ function Toolbar({ addTable, onSave, autoSaveEnable, setAutoSaveEnable, onExport
 
       {/* Right: IDE Action Toolbar Controls */}
       <div className="flex items-center gap-2">
-        {/* Undo / Redo */}
-        <div className="flex items-center bg-zinc-900/80 border border-zinc-800/80 rounded-lg p-0.5">
-          <button
-            type="button"
-            className="p-1.5 text-zinc-400 hover:text-white rounded hover:bg-zinc-800 transition-all cursor-pointer"
-            title="Undo"
-          >
-            <Undo2 className="w-3.5 h-3.5" />
-          </button>
-          <button
-            type="button"
-            className="p-1.5 text-zinc-400 hover:text-white rounded hover:bg-zinc-800 transition-all cursor-pointer"
-            title="Redo"
-          >
-            <Redo2 className="w-3.5 h-3.5" />
-          </button>
-        </div>
+       
 
         <div className="h-4 w-px bg-zinc-800" />
 
