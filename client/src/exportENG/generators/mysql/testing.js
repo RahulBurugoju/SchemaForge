@@ -41,3 +41,6 @@ console.log(exportSchema(relationalCanvas, "mysql"));
 
 console.log("\n=== POSTGRESQL OUTPUT ===");
 console.log(exportSchema(relationalCanvas, "postgresql"));
+
+console.log("\n=== SQLITE OUTPUT ===");
+console.log(exportSchema(relationalCanvas, "sqlite"));
