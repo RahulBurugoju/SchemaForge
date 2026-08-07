@@ -15,6 +15,8 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         clearAuth: (state) => {
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
             state.user = null;
             state.isAuthenticated = false;
             state.loading = false;
@@ -48,12 +50,21 @@ const authSlice = createSlice({
                 state.error = null;
             })
             .addCase(loginUser.fulfilled, (state, action) => {
+                const payloadData = action.payload?.data;
+                const accessToken = payloadData?.accessToken || payloadData?.["access token"];
+                const refreshToken = payloadData?.refreshToken || payloadData?.["refresh token"];
+
+                if (accessToken) localStorage.setItem("accessToken", accessToken);
+                if (refreshToken) localStorage.setItem("refreshToken", refreshToken);
+
                 state.loading = false;
-                state.user = action.payload?.data?.user;
+                state.user = payloadData?.user;
                 state.isAuthenticated = true;
                 state.error = null;
              })
             .addCase(loginUser.rejected, (state, action) => {
+                localStorage.removeItem("accessToken");
+                localStorage.removeItem("refreshToken");
                 state.loading = false;
                 state.error = action.payload;
                 state.isAuthenticated = false;
@@ -64,6 +75,8 @@ const authSlice = createSlice({
                 state.error = null;
             })
             .addCase(logoutUser.fulfilled, (state) => { 
+                localStorage.removeItem("accessToken");
+                localStorage.removeItem("refreshToken");
                 state.loading = false;
                 state.user = null;
                 state.isAuthenticated = false;
@@ -79,13 +92,22 @@ const authSlice = createSlice({
                 state.error = null;
             })
             .addCase(refreshUserAccessToken.fulfilled, (state, action) => {
+                const payloadData = action.payload?.data;
+                const accessToken = payloadData?.accessToken || payloadData?.accesstoken;
+                const refreshToken = payloadData?.refreshToken || payloadData?.refreshtoken;
+
+                if (accessToken) localStorage.setItem("accessToken", accessToken);
+                if (refreshToken) localStorage.setItem("refreshToken", refreshToken);
+
                 state.loading = false;
-                state.tokens = action.payload?.data;
+                state.tokens = payloadData;
              })
             .addCase(refreshUserAccessToken.rejected, (state, action) => {
-                state.loading =false;
+                localStorage.removeItem("accessToken");
+                localStorage.removeItem("refreshToken");
+                state.loading = false;
                 state.isAuthenticated = false;
-                 state.tokens = null;
+                state.tokens = null;
                 state.error = action.payload
              })
              //----------------------------get current user ----------------------------------

@@ -17,9 +17,11 @@ const loginUser = asyncHandler(async (req, res) => {
 
     const { user, accessToken, refreshToken } = await loginUserService({ email, password });
 
+    const isProduction = process.env.NODE_ENV === "production";
     const options = {
         httpOnly: true,
-        secure: true,
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
     };
 
     return res.status(200)
@@ -28,7 +30,7 @@ const loginUser = asyncHandler(async (req, res) => {
         .json(
             new ApiResponse(
                 200,
-                { user, "access token": accessToken, "refresh token": refreshToken },
+                { user, accessToken, refreshToken, "access token": accessToken, "refresh token": refreshToken },
                 "user LoggedIn successful"
             )
         );
@@ -39,9 +41,11 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
     const { accessToken, refreshToken } = await refreshAccessTokenService(incomingRefreshToken);
 
+    const isProduction = process.env.NODE_ENV === "production";
     const options = {
         httpOnly: true,
-        secure: true,
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
     };
 
     return res.status(200)
@@ -50,7 +54,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         .json(
             new ApiResponse(
                 200,
-                { "accesstoken": accessToken, "refreshtoken": refreshToken },
+                { accessToken, refreshToken, accesstoken: accessToken, refreshtoken: refreshToken },
                 "Access token refreshed successfully"
             )
         );
@@ -61,9 +65,11 @@ const logoutUser = asyncHandler(async (req, res) => {
 
     await logoutService(userId);
 
+    const isProduction = process.env.NODE_ENV === "production";
     const options = {
         httpOnly: true,
-        secure: true,
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
     };
 
     return res
