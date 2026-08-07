@@ -28,15 +28,22 @@ export default function generateIds(template) {
     const newSource = idMap.get(edge.source) || edge.source;
     const newTarget = idMap.get(edge.target) || edge.target;
 
-    let newSourceHandle = edge.sourceHandle;
-    let newTargetHandle = edge.targetHandle;
+    let newSourceHandle = edge.sourceHandle || "";
+    let newTargetHandle = edge.targetHandle || "";
 
-    if (edge.sourceHandle && idMap.has(edge.source)) {
-      newSourceHandle = edge.sourceHandle.replace(edge.source, newSource);
+    if (newSourceHandle && !newSourceHandle.startsWith("source-")) {
+      newSourceHandle = `source-${newSourceHandle}`;
+    }
+    if (newTargetHandle && !newTargetHandle.startsWith("target-")) {
+      newTargetHandle = `target-${newTargetHandle}`;
     }
 
-    if (edge.targetHandle && idMap.has(edge.target)) {
-      newTargetHandle = edge.targetHandle.replace(edge.target, newTarget);
+    if (newSourceHandle && idMap.has(edge.source)) {
+      newSourceHandle = newSourceHandle.replace(edge.source, newSource);
+    }
+
+    if (newTargetHandle && idMap.has(edge.target)) {
+      newTargetHandle = newTargetHandle.replace(edge.target, newTarget);
     }
 
     return {

@@ -14,7 +14,9 @@ export default function deleteColumn(nodes = [], edges = [], nodeId, columnId) {
 
   const updatedEdges = edges.filter(
     (edge) =>
+      edge.sourceHandle !== `source-${nodeId}-${columnId}` &&
       edge.sourceHandle !== `${nodeId}-${columnId}` &&
+      edge.targetHandle !== `target-${nodeId}-${columnId}` &&
       edge.targetHandle !== `${nodeId}-${columnId}`
   );
 
