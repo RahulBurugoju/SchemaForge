@@ -49,6 +49,10 @@ api.interceptors.response.use(
                 localStorage.removeItem("accessToken");
                 localStorage.removeItem("refreshToken");
 
+                const { default: store } = await import("../app/store.js");
+                const { clearAuth } = await import("../features/auth/authSlice.js");
+                store.dispatch(clearAuth());
+
                 window.location.href = "/login";
                 return Promise.reject(refreshError);
             }
