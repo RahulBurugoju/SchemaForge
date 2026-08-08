@@ -1,3 +1,19 @@
+# Dependencies
+node_modules/
+jspm_packages/
+
+# Production & Build outputs
+dist/
+dist-ssr/
+build/
+out/
+
+# Environment variables & secrets
+.env
+.env.*
+!.env.example
+*.local
+
 # Logs
 logs
 *.log
@@ -7,18 +23,34 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Testing & Coverage
+coverage/
+.nyc_output/
+
+# Cache & Temporary files
+.vite/
+.cache/
+.eslintcache
+.parcel-cache/
+temp/
+tmp/
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# Operating System files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
