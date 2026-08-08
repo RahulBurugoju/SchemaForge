@@ -29,8 +29,17 @@ api.interceptors.response.use(
         if (error.response?.status === 401 && !originalRequest._retry && !originalRequest.url?.includes("/auth/refresh-token")) {
             originalRequest._retry = true;
 
+            const storedRefreshToken = localStorage.getItem("refreshToken");
+
+            if (!storedRefreshToken) {
+                localStorage.removeItem("accessToken");
+                const { default: store } = await import("../app/store.js");
+                const { clearAuth } = await import("../features/auth/authSlice.js");
+                store.dispatch(clearAuth());
+                return Promise.reject(error);
+            }
+
             try {
-                const storedRefreshToken = localStorage.getItem("refreshToken");
                 const response = await api.post("/auth/refresh-token", { refreshToken: storedRefreshToken });
 
                 const newAccessToken = response.data?.data?.accessToken || response.data?.data?.accesstoken;
@@ -53,7 +62,6 @@ api.interceptors.response.use(
                 const { clearAuth } = await import("../features/auth/authSlice.js");
                 store.dispatch(clearAuth());
 
-                window.location.href = "/login";
                 return Promise.reject(refreshError);
             }
         }

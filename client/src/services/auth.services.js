@@ -19,7 +19,8 @@ const logout = async ()=>{
 }
 
 const refreshAccessToken = async()=>{
-    const response = await api.post("/auth/refresh-token");
+    const storedRefreshToken = localStorage.getItem("refreshToken");
+    const response = await api.post("/auth/refresh-token", { refreshToken: storedRefreshToken });
     return response.data;
 }
 const getCurrentUser = async()=>{
