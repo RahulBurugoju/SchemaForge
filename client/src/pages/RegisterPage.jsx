@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../features/auth/authThunk.js";
 import { clearError } from "../features/auth/authSlice.js";
 import { Link, useNavigate } from "react-router-dom";
-import { Loader2, Home } from "lucide-react";
+import { Loader2, Layers } from "lucide-react";
 
 function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -24,45 +24,45 @@ function RegisterPage() {
     dispatch(clearError());
   }, [dispatch]);
 
-  const handelOnChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  function validate(formData) {
+  function validate(data) {
     const newErrors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-    if (!formData.userName?.trim()) {
-      newErrors.userName = "Username is Required";
-    } else if (formData.userName.length < 4) {
+    if (!data.userName?.trim()) {
+      newErrors.userName = "Username is required";
+    } else if (data.userName.length < 4) {
       newErrors.userName = "Username must be at least 4 characters";
     }
 
-    if (!formData.fullName?.trim()) {
-      newErrors.fullName = "Fullname is Required";
-    } else if (formData.fullName.length < 4) {
-      newErrors.fullName = "Fullname must be at least 4 characters";
+    if (!data.fullName?.trim()) {
+      newErrors.fullName = "Full name is required";
+    } else if (data.fullName.length < 4) {
+      newErrors.fullName = "Full name must be at least 4 characters";
     }
 
-    if (!formData.email?.trim()) {
+    if (!data.email?.trim()) {
       newErrors.email = "Email is required";
-    } else if (!emailRegex.test(formData.email)) {
+    } else if (!emailRegex.test(data.email)) {
       newErrors.email = "Please enter a valid email address";
     }
 
-    if (!formData.password) {
+    if (!data.password) {
       newErrors.password = "Password is required";
-    } else if (!passwordRegex.test(formData.password)) {
+    } else if (!passwordRegex.test(data.password)) {
       newErrors.password =
-        "Password must be at least 8 characters with upper & lower case, number, and special character";
+        "Password must be at least 8 characters with upper, lower, number, & special character";
     }
 
-    if (!formData.confirmPassword) {
+    if (!data.confirmPassword) {
       newErrors.confirmPassword = "Please confirm your password";
-    } else if (formData.password !== formData.confirmPassword) {
+    } else if (data.password !== data.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
 
@@ -84,188 +84,196 @@ function RegisterPage() {
           confirmPassword: "",
         });
         setSuccessMessage(
-          "Registration successful! Redirecting to login page...",
+          "Account created successfully. Redirecting to sign in..."
         );
         setTimeout(() => {
           setErrors({});
           navigate("/login");
-        }, 2000);
+        }, 1500);
       }
     }
   };
 
   return (
-    <div className="min-h-screen bg-black text-zinc-100 flex items-center justify-center p-4 relative overflow-hidden font-sans selection:bg-indigo-600 selection:text-white">
-      {/* Top Left Home Redirect Button */}
-      <button
-        type="button"
+    <div className="min-h-screen bg-[#0B0B0D] text-[#F5F5F7] flex flex-col items-center justify-center p-6 font-sans selection:bg-indigo-600 selection:text-white">
+      {/* Brand Header */}
+      <div
         onClick={() => navigate("/")}
-        className="absolute top-6 left-6 z-20 flex items-center gap-2 px-3 py-2 bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-xs font-medium text-zinc-300 hover:text-white transition-all cursor-pointer shadow-lg"
-        title="Return to Home Landing Page"
+        className="flex items-center gap-2.5 mb-8 cursor-pointer"
       >
-        <Home className="w-4 h-4 text-indigo-400" />
-        <span>Home</span>
-      </button>
-      {/* Overhead radial ambient light sources */}
-      <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-indigo-600/15 blur-[160px] rounded-full pointer-events-none -z-0" />
-      <div className="absolute bottom-10 right-1/4 w-[500px] h-[250px] bg-purple-600/10 blur-[180px] rounded-full pointer-events-none -z-0" />
+        <div className="w-8 h-8 rounded-lg bg-[#141416] border border-[#2C2C2E] flex items-center justify-center text-indigo-400">
+          <Layers className="w-4 h-4 stroke-[2.2]" />
+        </div>
+        <span className="font-semibold text-base tracking-tight text-[#F5F5F7]">
+          SchemaForge
+        </span>
+      </div>
 
-      <div className="max-w-md w-full bg-zinc-900/40 backdrop-blur-xl border border-zinc-800/80 rounded-3xl p-8 shadow-2xl shadow-indigo-950/40 relative z-10 hover:border-zinc-700/80 transition-all duration-300">
-        <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 tracking-tight text-center mb-6">
-          Sign Up Here!
-        </h1>
+      <div className="max-w-md w-full bg-[#141416] border border-[#2C2C2E] rounded-2xl p-6 sm:p-8 shadow-xl">
+        <div className="space-y-1 mb-6 text-center">
+          <h1 className="text-xl font-semibold text-[#F5F5F7] tracking-tight">
+            Create Account
+          </h1>
+          <p className="text-xs text-[#A1A1A6]">
+            Start designing database models and exporting DDL scripts.
+          </p>
+        </div>
 
         {successMessage && (
-          <div className="mb-4 p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-400 text-xs font-medium text-center animate-fade-in font-mono">
+          <div className="mb-4 p-2.5 bg-emerald-500/10 border border-emerald-500/30 rounded-lg text-emerald-400 text-xs font-medium text-center">
             {successMessage}
           </div>
         )}
 
         {apiError && (
-          <div className="mb-4 p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-400 text-xs font-medium text-center font-mono">
+          <div className="mb-4 p-2.5 bg-rose-500/10 border border-rose-500/30 rounded-lg text-rose-400 text-xs font-medium text-center">
             {apiError}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-1.5">
-              Username
-            </label>
-            <input
-              name="userName"
-              value={formData.userName}
-              onChange={(e) => handelOnChange(e)}
-              type="text"
-              placeholder="Enter your username"
-              className={`w-full px-4 py-3 bg-black/60 border ${
-                errors.userName
-                  ? "border-rose-500/80 focus:border-rose-500"
-                  : "border-zinc-800/80 focus:border-zinc-700"
-              } rounded-xl text-zinc-100 placeholder-zinc-500 focus:outline-none transition-all duration-200 text-sm`}
-            />
-            {errors.userName && (
-              <p className="mt-1.5 text-xs text-rose-400 font-medium font-mono">
-                {errors.userName}
-              </p>
-            )}
+        <form onSubmit={handleSubmit} className="space-y-3.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-[11px] font-mono font-medium text-[#A1A1A6] uppercase tracking-wider mb-1">
+                Username
+              </label>
+              <input
+                name="userName"
+                value={formData.userName}
+                onChange={handleChange}
+                type="text"
+                placeholder="johndoe"
+                className={`w-full px-3.5 py-2 bg-[#0B0B0D] border ${
+                  errors.userName
+                    ? "border-rose-500/80 focus:border-rose-500"
+                    : "border-[#2C2C2E] focus:border-[#3A3A3C]"
+                } rounded-lg text-[#F5F5F7] placeholder-[#6E6E73] focus:outline-none transition-colors text-xs`}
+              />
+              {errors.userName && (
+                <p className="mt-1 text-[10px] text-rose-400 font-medium">
+                  {errors.userName}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-mono font-medium text-[#A1A1A6] uppercase tracking-wider mb-1">
+                Full Name
+              </label>
+              <input
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleChange}
+                type="text"
+                placeholder="John Doe"
+                className={`w-full px-3.5 py-2 bg-[#0B0B0D] border ${
+                  errors.fullName
+                    ? "border-rose-500/80 focus:border-rose-500"
+                    : "border-[#2C2C2E] focus:border-[#3A3A3C]"
+                } rounded-lg text-[#F5F5F7] placeholder-[#6E6E73] focus:outline-none transition-colors text-xs`}
+              />
+              {errors.fullName && (
+                <p className="mt-1 text-[10px] text-rose-400 font-medium">
+                  {errors.fullName}
+                </p>
+              )}
+            </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-1.5">
-              Fullname
-            </label>
-            <input
-              name="fullName"
-              value={formData.fullName}
-              onChange={(e) => handelOnChange(e)}
-              type="text"
-              placeholder="Enter your full name"
-              className={`w-full px-4 py-3 bg-black/60 border ${
-                errors.fullName
-                  ? "border-rose-500/80 focus:border-rose-500"
-                  : "border-zinc-800/80 focus:border-zinc-700"
-              } rounded-xl text-zinc-100 placeholder-zinc-500 focus:outline-none transition-all duration-200 text-sm`}
-            />
-            {errors.fullName && (
-              <p className="mt-1.5 text-xs text-rose-400 font-medium font-mono">
-                {errors.fullName}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-1.5">
+            <label className="block text-[11px] font-mono font-medium text-[#A1A1A6] uppercase tracking-wider mb-1">
               Email
             </label>
             <input
               name="email"
               value={formData.email}
-              onChange={(e) => handelOnChange(e)}
+              onChange={handleChange}
               type="email"
               placeholder="name@example.com"
-              className={`w-full px-4 py-3 bg-black/60 border ${
+              className={`w-full px-3.5 py-2 bg-[#0B0B0D] border ${
                 errors.email
                   ? "border-rose-500/80 focus:border-rose-500"
-                  : "border-zinc-800/80 focus:border-zinc-700"
-              } rounded-xl text-zinc-100 placeholder-zinc-500 focus:outline-none transition-all duration-200 text-sm`}
+                  : "border-[#2C2C2E] focus:border-[#3A3A3C]"
+              } rounded-lg text-[#F5F5F7] placeholder-[#6E6E73] focus:outline-none transition-colors text-xs`}
             />
             {errors.email && (
-              <p className="mt-1.5 text-xs text-rose-400 font-medium font-mono">
+              <p className="mt-1 text-[10px] text-rose-400 font-medium">
                 {errors.email}
               </p>
             )}
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-1.5">
-              Password
-            </label>
-            <input
-              name="password"
-              value={formData.password}
-              onChange={(e) => handelOnChange(e)}
-              type="password"
-              placeholder="••••••••"
-              className={`w-full px-4 py-3 bg-black/60 border ${
-                errors.password
-                  ? "border-rose-500/80 focus:border-rose-500"
-                  : "border-zinc-800/80 focus:border-zinc-700"
-              } rounded-xl text-zinc-100 placeholder-zinc-500 focus:outline-none transition-all duration-200 text-sm`}
-            />
-            {errors.password && (
-              <p className="mt-1.5 text-xs text-rose-400 font-medium font-mono">
-                {errors.password}
-              </p>
-            )}
-          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-[11px] font-mono font-medium text-[#A1A1A6] uppercase tracking-wider mb-1">
+                Password
+              </label>
+              <input
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                type="password"
+                placeholder="••••••••"
+                className={`w-full px-3.5 py-2 bg-[#0B0B0D] border ${
+                  errors.password
+                    ? "border-rose-500/80 focus:border-rose-500"
+                    : "border-[#2C2C2E] focus:border-[#3A3A3C]"
+                } rounded-lg text-[#F5F5F7] placeholder-[#6E6E73] focus:outline-none transition-colors text-xs`}
+              />
+              {errors.password && (
+                <p className="mt-1 text-[10px] text-rose-400 font-medium">
+                  {errors.password}
+                </p>
+              )}
+            </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-1.5">
-              Confirm Password
-            </label>
-            <input
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={(e) => handelOnChange(e)}
-              type="password"
-              placeholder="••••••••"
-              className={`w-full px-4 py-3 bg-black/60 border ${
-                errors.confirmPassword
-                  ? "border-rose-500/80 focus:border-rose-500"
-                  : "border-zinc-800/80 focus:border-zinc-700"
-              } rounded-xl text-zinc-100 placeholder-zinc-500 focus:outline-none transition-all duration-200 text-sm`}
-            />
-            {errors.confirmPassword && (
-              <p className="mt-1.5 text-xs text-rose-400 font-medium font-mono">
-                {errors.confirmPassword}
-              </p>
-            )}
+            <div>
+              <label className="block text-[11px] font-mono font-medium text-[#A1A1A6] uppercase tracking-wider mb-1">
+                Confirm
+              </label>
+              <input
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                type="password"
+                placeholder="••••••••"
+                className={`w-full px-3.5 py-2 bg-[#0B0B0D] border ${
+                  errors.confirmPassword
+                    ? "border-rose-500/80 focus:border-rose-500"
+                    : "border-[#2C2C2E] focus:border-[#3A3A3C]"
+                } rounded-lg text-[#F5F5F7] placeholder-[#6E6E73] focus:outline-none transition-colors text-xs`}
+              />
+              {errors.confirmPassword && (
+                <p className="mt-1 text-[10px] text-rose-400 font-medium">
+                  {errors.confirmPassword}
+                </p>
+              )}
+            </div>
           </div>
 
           <button
             type="submit"
-            disabled={loading || Boolean(successMessage)}
-            className="w-full mt-3 py-3.5 px-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:via-purple-500 hover:to-pink-500 text-white font-semibold rounded-xl shadow-lg shadow-indigo-600/25 active:scale-[0.98] transition-all duration-200 cursor-pointer text-sm tracking-wide disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            disabled={loading}
+            className="w-full mt-3 py-2 px-4 bg-[#F5F5F7] text-[#0B0B0D] hover:bg-white font-medium rounded-lg shadow-sm active:scale-[0.98] transition-all cursor-pointer text-xs disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {loading ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Registering...</span>
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                <span>Creating account...</span>
               </>
             ) : (
-              "Sign Up"
+              "Create Account"
             )}
           </button>
         </form>
 
-        <div className="mt-6 text-center text-xs text-zinc-400 font-mono">
+        <div className="mt-6 text-center text-xs text-[#6E6E73]">
           Already have an account?{" "}
           <Link
             to="/login"
-            className="text-indigo-400 hover:text-indigo-300 font-medium underline underline-offset-4 transition-colors"
+            className="text-[#F5F5F7] hover:underline transition-colors font-medium"
           >
-            Click here to Login
+            Sign In
           </Link>
         </div>
       </div>
