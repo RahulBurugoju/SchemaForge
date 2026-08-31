@@ -1,6 +1,33 @@
 @import "tailwindcss";
 
-/* Hide scrollbars globally across all browsers while retaining scroll functionality */
+@layer base {
+  :root {
+    --bg-base: #0B0B0D;
+    --bg-surface: #141416;
+    --bg-elevated: #1C1C1F;
+    --bg-subtle: #242428;
+    --border-subtle: #2C2C2E;
+    --border-hover: #3A3A3C;
+    --text-primary: #F5F5F7;
+    --text-secondary: #A1A1A6;
+    --text-tertiary: #6E6E73;
+    --accent: #6366f1;
+    --accent-hover: #4f46e5;
+  }
+
+  body {
+    background-color: #0B0B0D;
+    color: #F5F5F7;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", "Geist", sans-serif;
+    letter-spacing: -0.011em;
+  }
+
+  code, pre, kbd, samp {
+    font-family: "JetBrains Mono", "SF Mono", Menlo, Monaco, Consolas, monospace;
+  }
+}
+
+/* Hide scrollbars globally while retaining scroll functionality */
 * {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
