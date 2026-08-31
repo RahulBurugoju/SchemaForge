@@ -10,7 +10,7 @@ function ProjectActions({ project }) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
-  const handelOpen = () => {
+  const handleOpen = () => {
     if (project?._id) {
       navigate(`/workspace/${project._id}`);
     } else {
@@ -18,11 +18,11 @@ function ProjectActions({ project }) {
     }
   };
 
-  const handelEdit = () => {
+  const handleEdit = () => {
     setIsEditOpen(true);
   };
 
-  const handelDelete = () => {
+  const handleDelete = () => {
     setIsDeleteOpen(true);
   };
 
@@ -36,21 +36,21 @@ function ProjectActions({ project }) {
 
   return (
     <div>
-      <div className="flex items-center justify-between gap-2 pt-1 flex-wrap">
+      <div className="flex items-center justify-between gap-1.5 flex-wrap">
         <div className="flex items-center gap-1.5 flex-wrap">
           <button
             type="button"
-            onClick={handelOpen}
-            className="px-3 py-1.5 bg-white text-black hover:bg-zinc-200 font-medium rounded-lg text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-[0.98]"
+            onClick={handleOpen}
+            className="px-2.5 py-1.5 bg-[#F5F5F7] text-[#0B0B0D] hover:bg-white font-medium rounded-lg text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-[0.98]"
           >
-            <ExternalLink className="w-3.5 h-3.5 stroke-[2.2]" />
+            <ExternalLink className="w-3.5 h-3.5" />
             <span>Open</span>
           </button>
 
           <button
             type="button"
             onClick={handleExport}
-            className="px-3 py-1.5 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer"
+            className="px-2.5 py-1.5 bg-[#1C1C1F] hover:bg-[#242428] text-[#A1A1A6] hover:text-[#F5F5F7] border border-[#2C2C2E] rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
           >
             <Download className="w-3.5 h-3.5" />
             <span>Export</span>
@@ -58,8 +58,9 @@ function ProjectActions({ project }) {
 
           <button
             type="button"
-            onClick={handelEdit}
-            className="px-3 py-1.5 bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700/60 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer"
+            onClick={handleEdit}
+            className="px-2.5 py-1.5 bg-[#1C1C1F] hover:bg-[#242428] text-[#A1A1A6] hover:text-[#F5F5F7] border border-[#2C2C2E] rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+            title="Edit Project Details"
           >
             <Pencil className="w-3.5 h-3.5" />
             <span>Edit</span>
@@ -68,23 +69,29 @@ function ProjectActions({ project }) {
 
         <button
           type="button"
-          onClick={handelDelete}
-          className="px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 border border-rose-500/20 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer"
+          onClick={handleDelete}
+          className="p-1.5 text-[#6E6E73] hover:text-rose-400 hover:bg-rose-500/10 rounded-lg text-xs transition-colors cursor-pointer"
+          title="Delete Project"
         >
           <Trash2 className="w-3.5 h-3.5" />
-          <span>Delete</span>
         </button>
       </div>
 
       {isEditOpen && (
         <Modal handelCLick={setIsEditOpen}>
-          <EditProjectModal project={project} onCloseEdit={() => setIsEditOpen(false)} />
+          <EditProjectModal
+            project={project}
+            onCloseEdit={() => setIsEditOpen(false)}
+          />
         </Modal>
       )}
 
       {isDeleteOpen && (
         <Modal handelCLick={setIsDeleteOpen}>
-          <DeleteProjectDialog project={project} onCloseDelete={() => setIsDeleteOpen(false)} />
+          <DeleteProjectDialog
+            project={project}
+            onCloseDelete={() => setIsDeleteOpen(false)}
+          />
         </Modal>
       )}
     </div>
