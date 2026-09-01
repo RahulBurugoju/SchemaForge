@@ -4,17 +4,15 @@ import { useSelector } from "react-redux";
 import {
   Layers,
   Database,
-  Sparkles,
   ArrowRight,
-  Zap,
-  CheckCircle2,
-  Layout,
   Code,
   Copy,
   Check,
   Cpu,
   Key,
   Link2,
+  Table,
+  CheckCircle2
 } from "lucide-react";
 
 function LandingPage() {
@@ -25,43 +23,54 @@ function LandingPage() {
   const [copiedCode, setCopiedCode] = useState(false);
 
   const sampleCodeSnippets = {
-    mysql: `CREATE TABLE Users (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    username VARCHAR(255) NOT NULL UNIQUE,
-    email VARCHAR(255) NOT NULL,
+    mysql: `-- SchemaForge Generated MySQL DDL
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(64) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+) ENGINE=InnoDB;
 
-CREATE TABLE Orders (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     total_amount DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
-);`,
-    postgresql: `CREATE TABLE "Users" (
+    status ENUM('pending', 'completed', 'cancelled') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_orders_user FOREIGN KEY (user_id) 
+        REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB;`,
+    postgresql: `-- SchemaForge Generated PostgreSQL DDL
+CREATE TABLE "users" (
     "id" SERIAL PRIMARY KEY,
-    "username" VARCHAR(255) NOT NULL UNIQUE,
-    "email" VARCHAR(255) NOT NULL,
-    "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    "username" VARCHAR(64) NOT NULL UNIQUE,
+    "email" VARCHAR(255) NOT NULL UNIQUE,
+    "created_at" TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE TABLE "Orders" (
+CREATE TABLE "orders" (
     "id" SERIAL PRIMARY KEY,
     "user_id" INTEGER NOT NULL,
-    "total_amount" DECIMAL(10, 2) NOT NULL,
-    CONSTRAINT "fk_user" FOREIGN KEY ("user_id") REFERENCES "Users"("id")
+    "total_amount" NUMERIC(10, 2) NOT NULL,
+    "status" VARCHAR(32) DEFAULT 'pending',
+    "created_at" TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    CONSTRAINT "fk_orders_user" FOREIGN KEY ("user_id") 
+        REFERENCES "users"("id") ON DELETE CASCADE
 );`,
-    mongodb: `const mongoose = require('mongoose');
+    mongodb: `// SchemaForge Generated Mongoose ODM Schema
+const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  email: { type: String, required: true },
+  username: { type: String, required: true, unique: true, trim: true },
+  email: { type: String, required: true, unique: true, lowercase: true },
   createdAt: { type: Date, default: Date.now }
 });
 
 const OrderSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  totalAmount: { type: Number, required: true }
+  totalAmount: { type: Number, required: true },
+  status: { type: String, enum: ['pending', 'completed', 'cancelled'], default: 'pending' },
+  createdAt: { type: Date, default: Date.now }
 });
 
 module.exports = {
@@ -85,38 +94,34 @@ module.exports = {
   };
 
   return (
-    <div className="min-h-screen bg-black text-zinc-100 font-sans relative selection:bg-indigo-600 selection:text-white overflow-hidden">
-      {/* Background overhead radial ambient light */}
-      <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[1000px] h-[400px] bg-indigo-600/15 blur-[160px] rounded-full pointer-events-none -z-0" />
-      <div className="absolute top-1/3 left-1/4 w-[600px] h-[300px] bg-purple-600/10 blur-[180px] rounded-full pointer-events-none -z-0" />
-
-      {/* Navbar Header */}
-      <header className="border-b border-zinc-800/80 bg-black/60 backdrop-blur-xl sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
-            <div className="p-2 rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 shadow-lg shadow-indigo-600/20">
-              <Layers className="w-5 h-5 stroke-[2.2]" />
+    <div className="min-h-screen bg-[#0B0B0D] text-[#F5F5F7] font-sans selection:bg-indigo-600 selection:text-white">
+      {/* Editorial Navigation Header */}
+      <header className="border-b border-[#2C2C2E] bg-[#0B0B0D]/90 backdrop-blur-md sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+          <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => navigate("/")}>
+            <div className="w-7 h-7 rounded-lg bg-[#141416] border border-[#2C2C2E] flex items-center justify-center text-indigo-400">
+              <Layers className="w-4 h-4 stroke-[2.2]" />
             </div>
-            <span className="font-extrabold text-lg tracking-tight text-white">
+            <span className="font-semibold text-sm tracking-tight text-[#F5F5F7]">
               SchemaForge
             </span>
           </div>
 
-          <nav className="hidden md:flex items-center gap-8 text-xs font-medium text-zinc-400">
-            <a href="#features" className="hover:text-white transition-colors">Features</a>
-            <a href="#generators" className="hover:text-white transition-colors">Generators</a>
-            <a href="#templates" className="hover:text-white transition-colors">Templates</a>
-            <a href="#code" className="hover:text-white transition-colors">Live Code</a>
+          <nav className="hidden md:flex items-center gap-6 text-xs text-[#A1A1A6]">
+            <a href="#editor" className="hover:text-[#F5F5F7] transition-colors">Workspace</a>
+            <a href="#features" className="hover:text-[#F5F5F7] transition-colors">Capabilities</a>
+            <a href="#engines" className="hover:text-[#F5F5F7] transition-colors">Engines</a>
+            <a href="#code" className="hover:text-[#F5F5F7] transition-colors">Live Output</a>
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             {user ? (
               <button
                 type="button"
                 onClick={() => navigate("/dashboard")}
-                className="bg-white text-black hover:bg-zinc-200 font-semibold rounded-xl px-4 py-2 text-xs flex items-center gap-1.5 transition-all shadow-sm active:scale-[0.98] cursor-pointer"
+                className="bg-[#F5F5F7] text-[#0B0B0D] hover:bg-white font-medium rounded-lg px-3.5 py-1.5 text-xs flex items-center gap-1.5 transition-all cursor-pointer"
               >
-                <span>Go to Dashboard</span>
+                <span>Dashboard</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             ) : (
@@ -124,14 +129,14 @@ module.exports = {
                 <button
                   type="button"
                   onClick={() => navigate("/login")}
-                  className="text-zinc-300 hover:text-white font-medium text-xs px-3 py-2 transition-colors cursor-pointer"
+                  className="text-[#A1A1A6] hover:text-[#F5F5F7] font-medium text-xs px-3 py-1.5 transition-colors cursor-pointer"
                 >
-                  Log In
+                  Sign In
                 </button>
                 <button
                   type="button"
                   onClick={() => navigate("/register")}
-                  className="bg-white text-black hover:bg-zinc-200 font-semibold rounded-xl px-4 py-2 text-xs flex items-center gap-1.5 transition-all shadow-sm active:scale-[0.98] cursor-pointer"
+                  className="bg-[#F5F5F7] text-[#0B0B0D] hover:bg-white font-medium rounded-lg px-3.5 py-1.5 text-xs flex items-center gap-1.5 transition-all cursor-pointer"
                 >
                   <span>Get Started</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -143,122 +148,155 @@ module.exports = {
       </header>
 
       {/* Hero Section */}
-      <section className="pt-20 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative z-10 text-center space-y-8">
-        {/* Badge Banner */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium bg-zinc-900/90 text-indigo-300 border border-zinc-800 shadow-xl">
-          <Sparkles className="w-4 h-4 text-indigo-400 animate-pulse" />
-          <span>Visual Database Modeling & Multi-Engine Export</span>
+      <section className="pt-20 pb-16 px-6 max-w-4xl mx-auto text-center space-y-6">
+        {/* Subtle Category Pill */}
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono text-[#A1A1A6] bg-[#141416] border border-[#2C2C2E]">
+          <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+          <span>Visual Database Engineering</span>
         </div>
 
-        {/* Hero Title */}
-        <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold text-white tracking-tight max-w-5xl mx-auto leading-[1.1]">
-          Design Database Schemas Visually.{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">
-            Export DDL Code Instantly.
-          </span>
+        {/* Title */}
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight text-[#F5F5F7] leading-[1.12]">
+          Design database schemas visually. Export production DDL code.
         </h1>
 
         {/* Subtitle */}
-        <p className="text-zinc-400 text-base sm:text-lg max-w-3xl mx-auto leading-relaxed font-normal">
-          SchemaForge empowers developers and database architects to model ER diagrams on an interactive infinite canvas and export production-ready SQL scripts for MySQL, PostgreSQL, MongoDB, SQLite, and SQL Server.
+        <p className="text-[#A1A1A6] text-base sm:text-lg max-w-2xl mx-auto leading-relaxed font-normal">
+          SchemaForge provides an intuitive visual modeling canvas to build entity-relationship diagrams and instantly generate optimized DDL scripts for SQL and NoSQL engines.
         </p>
 
-        {/* CTA Action Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+        {/* Action Controls */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
           <button
             type="button"
             onClick={handleStart}
-            className="w-full sm:w-auto bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:via-purple-500 hover:to-pink-500 text-white font-semibold rounded-xl px-8 py-3.5 text-sm flex items-center justify-center gap-2.5 shadow-xl shadow-indigo-600/30 active:scale-[0.98] transition-all cursor-pointer"
+            className="w-full sm:w-auto bg-[#F5F5F7] text-[#0B0B0D] hover:bg-white font-medium rounded-lg px-5 py-2.5 text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm"
           >
-            <span>Start Modeling Free</span>
-            <ArrowRight className="w-4 h-4" />
+            <span>Open Studio</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </button>
 
           <button
             type="button"
             onClick={() => navigate("/templates")}
-            className="w-full sm:w-auto bg-zinc-900/90 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 rounded-xl px-6 py-3.5 text-sm font-medium flex items-center justify-center gap-2 transition-all cursor-pointer"
+            className="w-full sm:w-auto bg-[#141416] hover:bg-[#1C1C1F] text-[#F5F5F7] border border-[#2C2C2E] rounded-lg px-4 py-2.5 text-xs font-medium flex items-center justify-center gap-2 transition-all cursor-pointer"
           >
-            <Layout className="w-4 h-4 text-indigo-400" />
             <span>Explore Starter Templates</span>
           </button>
         </div>
 
-        {/* Engine Pills Showcase */}
-        <div className="pt-8 flex flex-wrap items-center justify-center gap-3 text-xs font-mono text-zinc-400">
-          <span className="text-zinc-500 uppercase font-semibold text-[10px] tracking-wider mr-2">Supported Databases:</span>
+        {/* Engine Tags */}
+        <div className="pt-4 flex flex-wrap items-center justify-center gap-2 text-xs font-mono text-[#A1A1A6]">
+          <span className="text-[#6E6E73] text-[11px] mr-1">Engines:</span>
           {["MySQL", "PostgreSQL", "MongoDB", "SQLite", "SQL Server"].map((db) => (
-            <span key={db} className="px-3 py-1 rounded-full bg-zinc-900/80 border border-zinc-800/80 text-zinc-300 flex items-center gap-1.5">
-              <Database className="w-3.5 h-3.5 text-indigo-400" />
+            <span key={db} className="px-2.5 py-0.5 rounded-md bg-[#141416] border border-[#2C2C2E] text-xs">
               {db}
             </span>
           ))}
         </div>
+      </section>
 
-        {/* IDE Visual Editor Showcase Card */}
-        <div className="pt-10 max-w-5xl mx-auto">
-          <div className="bg-zinc-950 border border-zinc-800/90 rounded-3xl p-4 sm:p-6 shadow-2xl shadow-indigo-950/40 relative overflow-hidden group">
-            {/* Header bar mock */}
-            <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3 mb-4 text-xs">
-              <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-rose-500/80" />
-                <span className="w-3 h-3 rounded-full bg-amber-500/80" />
-                <span className="w-3 h-3 rounded-full bg-emerald-500/80" />
-                <span className="text-zinc-400 font-mono text-[11px] ml-2">SchemaForge Editor — E-Commerce Core</span>
-              </div>
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                Live Sync
+      {/* Product Hero: IDE Workspace Preview */}
+      <section id="editor" className="px-6 max-w-5xl mx-auto pb-24">
+        <div className="bg-[#141416] border border-[#2C2C2E] rounded-xl overflow-hidden shadow-2xl">
+          {/* macOS Titlebar */}
+          <div className="bg-[#0B0B0D] border-b border-[#2C2C2E] px-4 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#2C2C2E]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#2C2C2E]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#2C2C2E]" />
+              <span className="text-[#A1A1A6] font-mono text-[11px] ml-2">ecommerce-core.sf</span>
+            </div>
+            <div className="flex items-center gap-3 text-xs font-mono text-[#A1A1A6]">
+              <span className="text-emerald-400 flex items-center gap-1.5 text-[11px]">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                Valid Schema
               </span>
             </div>
+          </div>
 
-            {/* Mock Visual Grid Nodes */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left font-sans py-2">
-              {/* Users Node */}
-              <div className="bg-slate-900 border border-slate-800 rounded-xl p-3.5 space-y-2 shadow-lg">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                  <span className="font-bold text-xs text-white font-mono flex items-center gap-1.5">
-                    <Layers className="w-3.5 h-3.5 text-indigo-400" /> Users
-                  </span>
-                  <span className="text-[10px] text-slate-500 font-mono">4 cols</span>
+          {/* Workspace Body Simulation */}
+          <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-4 bg-[#0B0B0D]">
+            {/* Table 1: Users */}
+            <div className="bg-[#141416] border border-[#2C2C2E] rounded-lg overflow-hidden font-mono text-xs">
+              <div className="bg-[#1C1C1F] px-3.5 py-2.5 border-b border-[#2C2C2E] flex items-center justify-between">
+                <span className="font-semibold text-[#F5F5F7] flex items-center gap-1.5">
+                  <Table className="w-3.5 h-3.5 text-indigo-400" /> users
+                </span>
+                <span className="text-[10px] text-[#6E6E73]">4 columns</span>
+              </div>
+              <div className="p-2.5 space-y-1.5 text-[11px]">
+                <div className="flex justify-between items-center text-[#F5F5F7]">
+                  <span className="flex items-center gap-1.5"><Key className="w-3 h-3 text-indigo-400" /> id</span>
+                  <span className="text-[#6E6E73]">INT (PK)</span>
                 </div>
-                <div className="space-y-1 font-mono text-[11px] text-slate-300">
-                  <div className="flex justify-between items-center text-white"><span className="flex items-center gap-1"><Key className="w-3 h-3 text-purple-400" /> id</span><span className="text-[10px] text-slate-500">INT (PK)</span></div>
-                  <div className="flex justify-between items-center"><span>username</span><span className="text-[10px] text-slate-500">VARCHAR</span></div>
-                  <div className="flex justify-between items-center"><span>email</span><span className="text-[10px] text-slate-500">VARCHAR</span></div>
-                  <div className="flex justify-between items-center"><span>created_at</span><span className="text-[10px] text-slate-500">TIMESTAMP</span></div>
+                <div className="flex justify-between items-center text-[#A1A1A6]">
+                  <span>username</span>
+                  <span className="text-[#6E6E73]">VARCHAR(64)</span>
+                </div>
+                <div className="flex justify-between items-center text-[#A1A1A6]">
+                  <span>email</span>
+                  <span className="text-[#6E6E73]">VARCHAR(255)</span>
+                </div>
+                <div className="flex justify-between items-center text-[#A1A1A6]">
+                  <span>created_at</span>
+                  <span className="text-[#6E6E73]">TIMESTAMP</span>
                 </div>
               </div>
+            </div>
 
-              {/* Orders Node */}
-              <div className="bg-slate-900 border border-indigo-500/80 ring-1 ring-indigo-500/30 rounded-xl p-3.5 space-y-2 shadow-lg">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                  <span className="font-bold text-xs text-white font-mono flex items-center gap-1.5">
-                    <Layers className="w-3.5 h-3.5 text-indigo-400" /> Orders
-                  </span>
-                  <span className="text-[10px] text-indigo-400 font-mono">Selected</span>
+            {/* Table 2: Orders */}
+            <div className="bg-[#141416] border border-indigo-500/50 rounded-lg overflow-hidden font-mono text-xs">
+              <div className="bg-[#1C1C1F] px-3.5 py-2.5 border-b border-[#2C2C2E] flex items-center justify-between">
+                <span className="font-semibold text-[#F5F5F7] flex items-center gap-1.5">
+                  <Table className="w-3.5 h-3.5 text-indigo-400" /> orders
+                </span>
+                <span className="text-[10px] text-indigo-400">Selected</span>
+              </div>
+              <div className="p-2.5 space-y-1.5 text-[11px]">
+                <div className="flex justify-between items-center text-[#F5F5F7]">
+                  <span className="flex items-center gap-1.5"><Key className="w-3 h-3 text-indigo-400" /> id</span>
+                  <span className="text-[#6E6E73]">INT (PK)</span>
                 </div>
-                <div className="space-y-1 font-mono text-[11px] text-slate-300">
-                  <div className="flex justify-between items-center text-white"><span className="flex items-center gap-1"><Key className="w-3 h-3 text-purple-400" /> id</span><span className="text-[10px] text-slate-500">INT (PK)</span></div>
-                  <div className="flex justify-between items-center text-sky-300"><span className="flex items-center gap-1"><Link2 className="w-3 h-3 text-sky-400" /> user_id</span><span className="text-[10px] text-sky-400">INT (FK)</span></div>
-                  <div className="flex justify-between items-center"><span>total_amount</span><span className="text-[10px] text-slate-500">DECIMAL</span></div>
-                  <div className="flex justify-between items-center"><span>status</span><span className="text-[10px] text-slate-500">VARCHAR</span></div>
+                <div className="flex justify-between items-center text-indigo-300">
+                  <span className="flex items-center gap-1.5"><Link2 className="w-3 h-3 text-indigo-400" /> user_id</span>
+                  <span className="text-indigo-400/80">INT (FK)</span>
+                </div>
+                <div className="flex justify-between items-center text-[#A1A1A6]">
+                  <span>total_amount</span>
+                  <span className="text-[#6E6E73]">DECIMAL(10,2)</span>
+                </div>
+                <div className="flex justify-between items-center text-[#A1A1A6]">
+                  <span>status</span>
+                  <span className="text-[#6E6E73]">VARCHAR(32)</span>
                 </div>
               </div>
+            </div>
 
-              {/* Products Node */}
-              <div className="bg-slate-900 border border-slate-800 rounded-xl p-3.5 space-y-2 shadow-lg">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                  <span className="font-bold text-xs text-white font-mono flex items-center gap-1.5">
-                    <Layers className="w-3.5 h-3.5 text-indigo-400" /> Products
-                  </span>
-                  <span className="text-[10px] text-slate-500 font-mono">4 cols</span>
+            {/* Table 3: Order Items */}
+            <div className="bg-[#141416] border border-[#2C2C2E] rounded-lg overflow-hidden font-mono text-xs">
+              <div className="bg-[#1C1C1F] px-3.5 py-2.5 border-b border-[#2C2C2E] flex items-center justify-between">
+                <span className="font-semibold text-[#F5F5F7] flex items-center gap-1.5">
+                  <Table className="w-3.5 h-3.5 text-indigo-400" /> order_items
+                </span>
+                <span className="text-[10px] text-[#6E6E73]">4 columns</span>
+              </div>
+              <div className="p-2.5 space-y-1.5 text-[11px]">
+                <div className="flex justify-between items-center text-[#F5F5F7]">
+                  <span className="flex items-center gap-1.5"><Key className="w-3 h-3 text-indigo-400" /> id</span>
+                  <span className="text-[#6E6E73]">INT (PK)</span>
                 </div>
-                <div className="space-y-1 font-mono text-[11px] text-slate-300">
-                  <div className="flex justify-between items-center text-white"><span className="flex items-center gap-1"><Key className="w-3 h-3 text-purple-400" /> id</span><span className="text-[10px] text-slate-500">INT (PK)</span></div>
-                  <div className="flex justify-between items-center"><span>title</span><span className="text-[10px] text-slate-500">VARCHAR</span></div>
-                  <div className="flex justify-between items-center"><span>price</span><span className="text-[10px] text-slate-500">DECIMAL</span></div>
-                  <div className="flex justify-between items-center"><span>stock</span><span className="text-[10px] text-slate-500">INT</span></div>
+                <div className="flex justify-between items-center text-indigo-300">
+                  <span className="flex items-center gap-1.5"><Link2 className="w-3 h-3 text-indigo-400" /> order_id</span>
+                  <span className="text-indigo-400/80">INT (FK)</span>
+                </div>
+                <div className="flex justify-between items-center text-[#A1A1A6]">
+                  <span>product_id</span>
+                  <span className="text-[#6E6E73]">INT (FK)</span>
+                </div>
+                <div className="flex justify-between items-center text-[#A1A1A6]">
+                  <span>quantity</span>
+                  <span className="text-[#6E6E73]">INT</span>
                 </div>
               </div>
             </div>
@@ -266,177 +304,98 @@ module.exports = {
         </div>
       </section>
 
-      {/* Features Bento Section */}
-      <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-12 border-t border-zinc-800/80">
-        <div className="text-center space-y-3">
-          <h2 className="text-xs font-semibold text-indigo-400 uppercase tracking-widest">Architectural Features</h2>
-          <p className="text-3xl font-extrabold text-white tracking-tight">Everything You Need to Model & Export</p>
+      {/* Capabilities / Structure Section */}
+      <section id="features" className="border-t border-[#2C2C2E] py-20 px-6 max-w-5xl mx-auto space-y-12">
+        <div className="space-y-2">
+          <h2 className="text-xs font-mono uppercase text-[#A1A1A6] tracking-wider">Architecture</h2>
+          <p className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#F5F5F7]">
+            Engineered for developers who care about precision.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Card 1 */}
-          <div className="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-6 space-y-3 hover:border-zinc-700 transition-all">
-            <div className="p-3 w-fit bg-zinc-900 border border-zinc-800 rounded-xl text-indigo-400">
-              <Zap className="w-6 h-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-white tracking-tight">Visual ERD Editor</h3>
-            <p className="text-zinc-400 text-xs leading-relaxed">
-              Drag-and-drop tables, customize field datatypes, and establish primary/foreign key connections with visual smoothstep edge handles.
+          <div className="space-y-2">
+            <h3 className="text-sm font-semibold text-[#F5F5F7]">Visual ER Modeling</h3>
+            <p className="text-xs text-[#A1A1A6] leading-relaxed">
+              Design tables, define data types, configure default values, and create primary or foreign key connections on an infinite canvas.
             </p>
           </div>
 
-          {/* Card 2 */}
-          <div className="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-6 space-y-3 hover:border-zinc-700 transition-all">
-            <div className="p-3 w-fit bg-zinc-900 border border-zinc-800 rounded-xl text-indigo-400">
-              <Cpu className="w-6 h-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-white tracking-tight">5 Generator Engines</h3>
-            <p className="text-zinc-400 text-xs leading-relaxed">
-              Automatically translate visual diagrams into MySQL, PostgreSQL, SQLite, SQL Server DDL, or Mongoose JavaScript schemas.
+          <div className="space-y-2">
+            <h3 className="text-sm font-semibold text-[#F5F5F7]">5 Native Generator Engines</h3>
+            <p className="text-xs text-[#A1A1A6] leading-relaxed">
+              Output dialect-accurate SQL statements for MySQL, PostgreSQL, SQLite, SQL Server, or Mongoose schema definitions.
             </p>
           </div>
 
-          {/* Card 3 */}
-          <div className="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-6 space-y-3 hover:border-zinc-700 transition-all">
-            <div className="p-3 w-fit bg-zinc-900 border border-zinc-800 rounded-xl text-indigo-400">
-              <Layout className="w-6 h-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-white tracking-tight">Starter Schema Gallery</h3>
-            <p className="text-zinc-400 text-xs leading-relaxed">
-              Skip setup with industry starter templates for E-Commerce, Blog CMS, Healthcare, Education, and Social Networks.
+          <div className="space-y-2">
+            <h3 className="text-sm font-semibold text-[#F5F5F7]">Starter Schema Library</h3>
+            <p className="text-xs text-[#A1A1A6] leading-relaxed">
+              Instant access to production-ready database schemas for E-Commerce, Blog CMS, Authentication, Healthcare, and Social systems.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Generators Section */}
-      <section id="generators" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-12 border-t border-zinc-800/80">
-        <div className="text-center space-y-3">
-          <h2 className="text-xs font-semibold text-indigo-400 uppercase tracking-widest">DDL Export Engines</h2>
-          <p className="text-3xl font-extrabold text-white tracking-tight">5 Production-Ready DDL Generators</p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-5 space-y-2">
-            <span className="text-xs font-mono font-bold text-indigo-400 uppercase">MySQL Generator</span>
-            <p className="text-zinc-400 text-xs">Produces CREATE TABLE statements with AUTO_INCREMENT, primary keys, and foreign key constraints.</p>
-          </div>
-          <div className="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-5 space-y-2">
-            <span className="text-xs font-mono font-bold text-indigo-400 uppercase">PostgreSQL Generator</span>
-            <p className="text-zinc-400 text-xs">Generates enterprise DDL with double-quoted identifiers, SERIAL primary keys, and constraint checks.</p>
-          </div>
-          <div className="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-5 space-y-2">
-            <span className="text-xs font-mono font-bold text-indigo-400 uppercase">MongoDB Generator</span>
-            <p className="text-zinc-400 text-xs">Outputs clean Mongoose JavaScript schema files with Schema definitions and ObjectId references.</p>
-          </div>
-          <div className="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-5 space-y-2">
-            <span className="text-xs font-mono font-bold text-indigo-400 uppercase">SQLite Generator</span>
-            <p className="text-zinc-400 text-xs">Outputs lightweight SQLite DDL with INTEGER PRIMARY KEY AUTOINCREMENT and normalized typings.</p>
-          </div>
-          <div className="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-5 space-y-2">
-            <span className="text-xs font-mono font-bold text-indigo-400 uppercase">SQL Server Generator</span>
-            <p className="text-zinc-400 text-xs">Generates T-SQL with bracketed [Identifiers], IDENTITY(1,1) columns, and DATETIME2 types.</p>
-          </div>
-          <div className="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-5 space-y-2">
-            <span className="text-xs font-mono font-bold text-indigo-400 uppercase">JSON Export</span>
-            <p className="text-zinc-400 text-xs">Exports full raw canvas model JSON for version control backup, REST APIs, or migration tools.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Templates Showcase Section */}
-      <section id="templates" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8 border-t border-zinc-800/80">
+      {/* Live Code Preview Section */}
+      <section id="code" className="border-t border-[#2C2C2E] py-20 px-6 max-w-5xl mx-auto space-y-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="space-y-1">
-            <h2 className="text-xs font-semibold text-indigo-400 uppercase tracking-widest">Starter Schema Gallery</h2>
-            <p className="text-3xl font-extrabold text-white tracking-tight">Launch Database Models in Seconds</p>
+            <h2 className="text-xs font-mono uppercase text-[#A1A1A6] tracking-wider">Generation</h2>
+            <p className="text-2xl font-semibold tracking-tight text-[#F5F5F7]">Production DDL in real-time</p>
           </div>
-          <button
-            type="button"
-            onClick={() => navigate("/templates")}
-            className="px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-200 hover:text-white rounded-xl text-xs font-medium flex items-center gap-2 transition-all cursor-pointer shadow-md"
-          >
-            <span>Browse Full Template Gallery</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-5 space-y-3 hover:border-zinc-700 transition-all">
-            <span className="text-[10px] font-mono uppercase bg-zinc-900 text-indigo-400 px-2.5 py-0.5 rounded-full border border-zinc-800">MySQL Engine</span>
-            <h3 className="text-base font-semibold text-white">E-Commerce Core</h3>
-            <p className="text-zinc-400 text-xs leading-relaxed">Users, Products, Categories, Orders, and OrderItems schemas with FK constraints.</p>
-          </div>
-          <div className="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-5 space-y-3 hover:border-zinc-700 transition-all">
-            <span className="text-[10px] font-mono uppercase bg-zinc-900 text-indigo-400 px-2.5 py-0.5 rounded-full border border-zinc-800">PostgreSQL</span>
-            <h3 className="text-base font-semibold text-white">Blog & CMS Platform</h3>
-            <p className="text-zinc-400 text-xs leading-relaxed">Authors, Posts, Comments, Tags, and PostTags junction tables with SERIAL primary keys.</p>
-          </div>
-          <div className="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-5 space-y-3 hover:border-zinc-700 transition-all">
-            <span className="text-[10px] font-mono uppercase bg-zinc-900 text-indigo-400 px-2.5 py-0.5 rounded-full border border-zinc-800">MongoDB Store</span>
-            <h3 className="text-base font-semibold text-white">Social Network</h3>
-            <p className="text-zinc-400 text-xs leading-relaxed">Users, Posts, Comments, and Followers Mongoose collections with ObjectId refs.</p>
+          <div className="flex items-center gap-1 bg-[#141416] p-1 rounded-lg border border-[#2C2C2E]">
+            {["mysql", "postgresql", "mongodb"].map((tab) => (
+              <button
+                key={tab}
+                type="button"
+                onClick={() => setActiveCodeTab(tab)}
+                className={`px-3 py-1 rounded-md text-xs font-mono uppercase transition-all cursor-pointer ${
+                  activeCodeTab === tab
+                    ? "bg-[#1C1C1F] text-[#F5F5F7] border border-[#2C2C2E]"
+                    : "text-[#6E6E73] hover:text-[#A1A1A6]"
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
           </div>
         </div>
-      </section>
 
-      {/* Code Generator Live Preview Section */}
-      <section id="code" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8 border-t border-zinc-800/80">
-        <div className="text-center space-y-3">
-          <h2 className="text-xs font-semibold text-indigo-400 uppercase tracking-widest">Multi-Database Code Generator</h2>
-          <p className="text-3xl font-extrabold text-white tracking-tight">Production SQL DDL & Schemas Generated Live</p>
-        </div>
-
-        <div className="max-w-4xl mx-auto bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-4">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-800/80 pb-4">
-            <div className="flex items-center gap-2">
-              {["mysql", "postgresql", "mongodb"].map((tab) => (
-                <button
-                  key={tab}
-                  type="button"
-                  onClick={() => setActiveCodeTab(tab)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold uppercase transition-all cursor-pointer ${
-                    activeCodeTab === tab
-                      ? "bg-indigo-600 text-white shadow-sm"
-                      : "bg-slate-800/80 text-slate-400 hover:text-white"
-                  }`}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
-
+        <div className="bg-[#141416] border border-[#2C2C2E] rounded-xl overflow-hidden">
+          <div className="bg-[#1C1C1F] px-4 py-2.5 border-b border-[#2C2C2E] flex items-center justify-between">
+            <span className="font-mono text-xs text-[#A1A1A6]">
+              schema-export.{activeCodeTab === "mongodb" ? "js" : "sql"}
+            </span>
             <button
               type="button"
               onClick={handleCopyCode}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#141416] hover:bg-[#242428] text-xs font-mono text-[#F5F5F7] border border-[#2C2C2E] transition-all cursor-pointer"
             >
               {copiedCode ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-              <span>{copiedCode ? "Copied DDL!" : "Copy DDL"}</span>
+              <span>{copiedCode ? "Copied" : "Copy"}</span>
             </button>
           </div>
 
-          <pre className="font-mono text-xs text-indigo-200 bg-slate-950 p-4 rounded-2xl overflow-x-auto leading-relaxed border border-slate-800/80">
+          <pre className="p-4 font-mono text-xs text-[#A1A1A6] bg-[#0B0B0D] overflow-x-auto leading-relaxed">
             <code>{sampleCodeSnippets[activeCodeTab]}</code>
           </pre>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-zinc-800/80 py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
-        <div className="flex items-center gap-2 font-mono">
+      {/* Editorial Footer */}
+      <footer className="border-t border-[#2C2C2E] py-10 px-6 max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#6E6E73]">
+        <div className="flex items-center gap-2">
           <Layers className="w-4 h-4 text-indigo-400" />
-          <span className="font-bold text-white">SchemaForge</span>
-          <span>© {new Date().getFullYear()} — Visual Database Modeling Engine</span>
+          <span className="font-medium text-[#F5F5F7]">SchemaForge</span>
+          <span>— Visual Database Studio</span>
         </div>
 
         <div className="flex items-center gap-6 font-mono text-[11px]">
-          <span className="flex items-center gap-1.5 text-emerald-400">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            System Operational
-          </span>
-          <button onClick={() => navigate("/dashboard")} className="hover:text-white cursor-pointer">Dashboard</button>
-          <button onClick={() => navigate("/templates")} className="hover:text-white cursor-pointer">Templates</button>
+          <button onClick={() => navigate("/dashboard")} className="hover:text-[#F5F5F7] cursor-pointer">Workspace</button>
+          <button onClick={() => navigate("/templates")} className="hover:text-[#F5F5F7] cursor-pointer">Templates</button>
+          <span>© {new Date().getFullYear()}</span>
         </div>
       </footer>
     </div>

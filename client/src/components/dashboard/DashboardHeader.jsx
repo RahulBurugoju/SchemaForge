@@ -1,64 +1,38 @@
 import React from "react";
-import { Sparkles, FolderPlus, LogOut, Layout, Home } from "lucide-react";
-import { useDispatch } from "react-redux";
+import { FolderPlus, Layout, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { logoutUser } from "../../features/auth/authThunk";
 
 function DashboardHeader({ user, onCreate }) {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    dispatch(logoutUser());
-  };
-
   return (
-    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 pb-6 border-b border-zinc-800/80 mb-8">
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-[#2C2C2E] mb-6">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight flex items-center gap-2">
-          Welcome back, {user?.userName || "Architect"}
+        <h1 className="text-xl sm:text-2xl font-semibold text-[#F5F5F7] tracking-tight">
+          Projects
         </h1>
-        <p className="text-zinc-400 text-sm mt-1.5 font-normal max-w-2xl leading-relaxed">
-          Design visual ER diagrams, configure relational primary/foreign keys, and generate production-ready database DDL scripts.
+        <p className="text-[#A1A1A6] text-xs mt-1 font-normal leading-relaxed">
+          Manage your relational entity models, export DDL definitions, and configure schemas.
         </p>
       </div>
 
-      <div className="flex items-center gap-3 shrink-0 flex-wrap">
-        <button
-          type="button"
-          onClick={() => navigate("/")}
-          className="bg-zinc-900/80 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 rounded-xl px-3 py-2.5 font-medium transition-all text-sm flex items-center gap-2 cursor-pointer"
-          title="Return to Home Landing Page"
-        >
-          <Home className="w-4 h-4 text-indigo-400" />
-          <span className="hidden sm:inline">Home</span>
-        </button>
-
+      <div className="flex items-center gap-2 shrink-0">
         <button
           type="button"
           onClick={() => navigate("/templates")}
-          className="bg-zinc-900/80 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 rounded-xl px-4 py-2.5 font-medium transition-all text-sm flex items-center gap-2 cursor-pointer"
+          className="bg-[#141416] hover:bg-[#1C1C1F] text-[#A1A1A6] hover:text-[#F5F5F7] border border-[#2C2C2E] rounded-lg px-3 py-2 font-medium transition-colors text-xs flex items-center gap-1.5 cursor-pointer"
         >
-          <Layout className="w-4 h-4 text-indigo-400" />
+          <Layout className="w-3.5 h-3.5" />
           <span>Templates</span>
         </button>
 
         <button
           type="button"
           onClick={onCreate}
-          className="bg-white text-black hover:bg-zinc-200 font-medium rounded-xl px-4 py-2.5 shadow-sm active:scale-[0.98] transition-all text-sm flex items-center gap-2 cursor-pointer group"
+          className="bg-[#F5F5F7] text-[#0B0B0D] hover:bg-white font-medium rounded-lg px-3.5 py-2 transition-all text-xs flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-[0.98]"
         >
-          <FolderPlus className="w-4 h-4 stroke-[2.2] group-hover:scale-105 transition-transform" />
+          <FolderPlus className="w-3.5 h-3.5 stroke-[2.2]" />
           <span>New Project</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={handleLogout}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/80 border border-zinc-800 hover:border-zinc-700/80 transition-all cursor-pointer"
-        >
-          <LogOut className="w-4 h-4" />
-          <span>Log Out</span>
         </button>
       </div>
     </div>

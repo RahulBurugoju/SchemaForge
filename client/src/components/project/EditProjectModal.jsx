@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { updateProject } from "../../features/project/project.Thunk";
-import { Sparkles, Pencil, Database, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
+import { Pencil, Database, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 
 function EditProjectModal({ project, onCloseEdit, onClose }) {
   const [formData, setFormData] = useState({
@@ -15,7 +14,6 @@ function EditProjectModal({ project, onCloseEdit, onClose }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (project) {
@@ -27,7 +25,7 @@ function EditProjectModal({ project, onCloseEdit, onClose }) {
     }
   }, [project]);
 
-  const handelChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -57,7 +55,7 @@ function EditProjectModal({ project, onCloseEdit, onClose }) {
     }
   };
 
-  const handelSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validate()) return;
@@ -84,24 +82,20 @@ function EditProjectModal({ project, onCloseEdit, onClose }) {
   };
 
   return (
-    <div className="text-zinc-100 font-sans space-y-6">
+    <div className="text-[#F5F5F7] font-sans space-y-5">
       {/* Header */}
       <div className="space-y-1 pr-6">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-medium bg-zinc-900 text-zinc-300 border border-zinc-800 mb-2">
-          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-          <span>Update Model Details</span>
-        </div>
-        <h2 className="text-xl font-semibold text-white tracking-tight">
+        <h2 className="text-lg font-semibold text-[#F5F5F7] tracking-tight">
           Edit Project
         </h2>
-        <p className="text-zinc-400 text-xs leading-relaxed">
-          Modify the project name, description, or target database engine.
+        <p className="text-[#A1A1A6] text-xs leading-relaxed">
+          Update project metadata or target database system.
         </p>
       </div>
 
       {/* Success Alert */}
       {successMsg && (
-        <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-400 text-xs font-medium flex items-center gap-2">
+        <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg text-emerald-400 text-xs font-medium flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>{successMsg}</span>
         </div>
@@ -109,16 +103,19 @@ function EditProjectModal({ project, onCloseEdit, onClose }) {
 
       {/* Error Alert */}
       {error && (
-        <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-400 text-xs font-medium flex items-center gap-2">
+        <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-lg text-rose-400 text-xs font-medium flex items-center gap-2">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
-      <form onSubmit={handelSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
         {/* Project Name Field */}
         <div>
-          <label htmlFor="projectName" className="block text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-1.5">
+          <label
+            htmlFor="projectName"
+            className="block text-[11px] font-mono font-medium text-[#A1A1A6] uppercase tracking-wider mb-1.5"
+          >
             Project Name <span className="text-indigo-400">*</span>
           </label>
           <input
@@ -127,14 +124,17 @@ function EditProjectModal({ project, onCloseEdit, onClose }) {
             value={formData.projectName}
             type="text"
             placeholder="e.g. E-Commerce Core Schema"
-            onChange={handelChange}
-            className="w-full px-4 py-2.5 bg-black/60 border border-zinc-800 rounded-xl text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-zinc-600 focus:ring-1 focus:ring-zinc-600 transition-all text-sm"
+            onChange={handleChange}
+            className="w-full px-3.5 py-2 bg-[#0B0B0D] border border-[#2C2C2E] rounded-lg text-[#F5F5F7] placeholder-[#6E6E73] focus:outline-none focus:border-[#3A3A3C] transition-colors text-xs"
           />
         </div>
 
         {/* Description Field */}
         <div>
-          <label htmlFor="description" className="block text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-1.5">
+          <label
+            htmlFor="description"
+            className="block text-[11px] font-mono font-medium text-[#A1A1A6] uppercase tracking-wider mb-1.5"
+          >
             Description
           </label>
           <textarea
@@ -143,14 +143,17 @@ function EditProjectModal({ project, onCloseEdit, onClose }) {
             value={formData.description}
             rows={2}
             placeholder="Short summary of entities and database models..."
-            onChange={handelChange}
-            className="w-full px-4 py-2.5 bg-black/60 border border-zinc-800 rounded-xl text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-zinc-600 focus:ring-1 focus:ring-zinc-600 transition-all text-sm resize-none"
+            onChange={handleChange}
+            className="w-full px-3.5 py-2 bg-[#0B0B0D] border border-[#2C2C2E] rounded-lg text-[#F5F5F7] placeholder-[#6E6E73] focus:outline-none focus:border-[#3A3A3C] transition-colors text-xs resize-none"
           />
         </div>
 
         {/* Database System Dropdown */}
         <div>
-          <label htmlFor="databaseType" className="block text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-1.5">
+          <label
+            htmlFor="databaseType"
+            className="block text-[11px] font-mono font-medium text-[#A1A1A6] uppercase tracking-wider mb-1.5"
+          >
             Target Database System
           </label>
           <div className="relative">
@@ -158,35 +161,45 @@ function EditProjectModal({ project, onCloseEdit, onClose }) {
               id="databaseType"
               name="databaseType"
               value={formData.databaseType}
-              onChange={handelChange}
-              className="w-full px-4 py-2.5 bg-black/60 border border-zinc-800 rounded-xl text-zinc-100 focus:outline-none focus:border-zinc-600 transition-all text-sm cursor-pointer appearance-none"
+              onChange={handleChange}
+              className="w-full px-3.5 py-2 bg-[#0B0B0D] border border-[#2C2C2E] rounded-lg text-[#F5F5F7] focus:outline-none focus:border-[#3A3A3C] transition-colors text-xs cursor-pointer appearance-none"
             >
-              <option value="mysql" className="bg-zinc-900 text-white">MySQL Relational DB</option>
-              <option value="postgresql" className="bg-zinc-900 text-white">PostgreSQL Enterprise</option>
-              <option value="mongodb" className="bg-zinc-900 text-white">MongoDB Document Store</option>
-              <option value="sqlite" className="bg-zinc-900 text-white">SQLite Embedded</option>
-              <option value="sqlserver" className="bg-zinc-900 text-white">SQL Server</option>
+              <option value="mysql" className="bg-[#141416] text-[#F5F5F7]">
+                MySQL Relational DB
+              </option>
+              <option value="postgresql" className="bg-[#141416] text-[#F5F5F7]">
+                PostgreSQL Enterprise
+              </option>
+              <option value="mongodb" className="bg-[#141416] text-[#F5F5F7]">
+                MongoDB Document Store
+              </option>
+              <option value="sqlite" className="bg-[#141416] text-[#F5F5F7]">
+                SQLite Embedded
+              </option>
+              <option value="sqlserver" className="bg-[#141416] text-[#F5F5F7]">
+                SQL Server
+              </option>
             </select>
-            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-zinc-400">
-              <Database className="w-4 h-4" />
+            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-[#6E6E73]">
+              <Database className="w-3.5 h-3.5" />
             </div>
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div className="pt-4 flex items-center justify-end gap-3 border-t border-zinc-800/80">
+        <div className="pt-3 flex items-center justify-end gap-2.5 border-t border-[#2C2C2E]">
           <button
             type="button"
             onClick={handleCancel}
-            className="px-4 py-2.5 rounded-xl text-xs font-medium text-zinc-400 hover:text-white hover:bg-zinc-900 border border-zinc-800 transition-all cursor-pointer"
+            className="px-3 py-1.5 rounded-lg text-xs font-medium text-[#A1A1A6] hover:text-[#F5F5F7] hover:bg-[#1C1C1F] border border-transparent transition-colors cursor-pointer"
           >
             Cancel
           </button>
-          
+
           <button
             type="submit"
             disabled={isSubmitting}
-            className="px-5 py-2.5 bg-white text-black hover:bg-zinc-200 font-semibold rounded-xl text-xs flex items-center gap-2 shadow-sm active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50"
+            className="px-4 py-1.5 bg-[#F5F5F7] text-[#0B0B0D] hover:bg-white font-medium rounded-lg text-xs flex items-center gap-1.5 shadow-sm active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50"
           >
             {isSubmitting ? (
               <Loader2 className="w-3.5 h-3.5 animate-spin" />

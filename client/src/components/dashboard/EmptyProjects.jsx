@@ -1,37 +1,31 @@
-import React from 'react'
-import { FolderKanban, Plus } from 'lucide-react'
+import React from "react";
+import { FolderKanban, Plus } from "lucide-react";
 
 function EmptyProjects({ onCreate }) {
   return (
-    <div className="bg-zinc-900/20 backdrop-blur-md border border-zinc-800/80 border-dashed rounded-3xl p-12 text-center my-8 flex flex-col items-center justify-center relative overflow-hidden">
-      {/* Background glow ambient highlight */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-zinc-800/10 blur-3xl rounded-full pointer-events-none" />
-
-      {/* Folder Icon Badge */}
-      <div className="p-4 rounded-2xl bg-zinc-900/90 text-zinc-300 border border-zinc-800 mb-4 shadow-inner relative z-10">
-        <FolderKanban className="w-8 h-8 stroke-[1.5] text-zinc-200" />
+    <div className="border border-[#2C2C2E] border-dashed rounded-xl p-12 text-center my-6 flex flex-col items-center justify-center bg-[#141416]/40">
+      <div className="w-10 h-10 rounded-lg bg-[#141416] border border-[#2C2C2E] flex items-center justify-center text-[#A1A1A6] mb-3">
+        <FolderKanban className="w-5 h-5 stroke-[1.8]" />
       </div>
 
-      {/* Main Content */}
-      <h3 className="text-xl font-semibold text-white tracking-tight relative z-10">
-        No Projects Yet
+      <h3 className="text-sm font-semibold text-[#F5F5F7] tracking-tight">
+        No schemas yet
       </h3>
-      <p className="text-zinc-400 text-sm mt-1.5 max-w-md relative z-10 leading-relaxed font-normal">
-        Create your first database model.
+      <p className="text-xs text-[#A1A1A6] mt-1 max-w-sm leading-relaxed">
+        Create your first project to start visually modeling tables, keys, and DDL exports.
       </p>
 
-      {/* Action Button */}
       {onCreate && (
         <button
           onClick={onCreate}
-          className="mt-6 bg-white text-black hover:bg-zinc-200 font-medium rounded-xl px-5 py-2.5 shadow-sm active:scale-[0.98] transition-all text-sm flex items-center gap-2 cursor-pointer relative z-10"
+          className="mt-4 bg-[#F5F5F7] text-[#0B0B0D] hover:bg-white font-medium rounded-lg px-3.5 py-1.5 text-xs flex items-center gap-1.5 shadow-sm active:scale-[0.98] transition-all cursor-pointer"
         >
-          <Plus className="w-4 h-4 stroke-[2.2]" />
+          <Plus className="w-3.5 h-3.5 stroke-[2.2]" />
           <span>Create Project</span>
         </button>
       )}
     </div>
-  )
+  );
 }
 
-export default EmptyProjects
+export default EmptyProjects;
