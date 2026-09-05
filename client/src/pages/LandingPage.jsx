@@ -12,7 +12,8 @@ import {
   Key,
   Link2,
   Table,
-  CheckCircle2
+  CheckCircle2,
+  Terminal
 } from "lucide-react";
 
 function LandingPage() {
@@ -77,7 +78,91 @@ module.exports = {
   User: mongoose.model('User', UserSchema),
   Order: mongoose.model('Order', OrderSchema)
 };`,
+    sqlite: `-- SchemaForge Generated SQLite DDL
+CREATE TABLE "users" (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "username" TEXT NOT NULL UNIQUE,
+    "email" TEXT NOT NULL UNIQUE,
+    "created_at" DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE "orders" (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "user_id" INTEGER NOT NULL,
+    "total_amount" NUMERIC NOT NULL,
+    "status" TEXT DEFAULT 'pending',
+    "created_at" DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE
+);`,
+    sqlserver: `-- SchemaForge Generated SQL Server (T-SQL) DDL
+CREATE TABLE [dbo].[users] (
+    [id] INT IDENTITY(1,1) PRIMARY KEY,
+    [username] NVARCHAR(64) NOT NULL UNIQUE,
+    [email] NVARCHAR(255) NOT NULL UNIQUE,
+    [created_at] DATETIME2 DEFAULT GETDATE()
+);
+
+CREATE TABLE [dbo].[orders] (
+    [id] INT IDENTITY(1,1) PRIMARY KEY,
+    [user_id] INT NOT NULL,
+    [total_amount] DECIMAL(10, 2) NOT NULL,
+    [status] NVARCHAR(32) DEFAULT 'pending',
+    [created_at] DATETIME2 DEFAULT GETDATE(),
+    CONSTRAINT [FK_orders_users] FOREIGN KEY ([user_id]) 
+        REFERENCES [dbo].[users] ([id]) ON DELETE CASCADE
+);`,
   };
+
+  const enginesList = [
+    {
+      id: "postgresql",
+      name: "PostgreSQL",
+      badge: "Relational SQL",
+      format: ".sql output",
+      description: "Generates production-grade PostgreSQL DDL with typed columns, SERIAL / BIGSERIAL primary keys, and foreign keys.",
+      features: ["SERIAL / UUID", "TIMESTAMPTZ", "ON DELETE CASCADE", "Check Constraints"]
+    },
+    {
+      id: "mysql",
+      name: "MySQL",
+      badge: "Relational SQL",
+      format: ".sql output",
+      description: "Outputs clean MySQL DDL configured with the InnoDB storage engine, AUTO_INCREMENT IDs, and strict foreign keys.",
+      features: ["ENGINE=InnoDB", "AUTO_INCREMENT", "ENUM types", "Foreign Keys"]
+    },
+    {
+      id: "mongodb",
+      name: "MongoDB",
+      badge: "NoSQL ODM",
+      format: ".js Mongoose",
+      description: "Transpiles entity schemas into production-ready Mongoose ODM schema definitions with validations and model exports.",
+      features: ["Mongoose.Schema", "ObjectId Refs", "Timestamps", "Validation Rules"]
+    },
+    {
+      id: "sqlite",
+      name: "SQLite",
+      badge: "Embedded SQL",
+      format: ".sql output",
+      description: "Exports lightweight, standalone SQLite schema scripts perfect for local development, edge apps, and mobile testing.",
+      features: ["AUTOINCREMENT", "Inline Primary Keys", "Foreign Keys", "Zero-config"]
+    },
+    {
+      id: "sqlserver",
+      name: "SQL Server",
+      badge: "Enterprise T-SQL",
+      format: ".sql output",
+      description: "Generates Microsoft SQL Server scripts with bracketed identifiers, IDENTITY column definitions, and DATETIME2 types.",
+      features: ["[Bracketed] Names", "IDENTITY(1,1)", "DATETIME2", "FK Constraints"]
+    },
+    {
+      id: "json",
+      name: "JSON AST Graph",
+      badge: "Portable AST",
+      format: ".json schema",
+      description: "Full raw schema node graph export for version control backups, REST API consumption, CI/CD, or custom code generation.",
+      features: ["Portable Nodes", "Position Coordinates", "Full Field Metadata", "Relations"]
+    }
+  ];
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(sampleCodeSnippets[activeCodeTab]);
@@ -197,7 +282,7 @@ module.exports = {
       </section>
 
       {/* Product Hero: IDE Workspace Preview */}
-      <section id="editor" className="px-6 max-w-5xl mx-auto pb-24">
+      <section id="editor" className="px-6 max-w-5xl mx-auto pb-24 scroll-mt-16">
         <div className="bg-[#141416] border border-[#2C2C2E] rounded-xl overflow-hidden shadow-2xl">
           {/* macOS Titlebar */}
           <div className="bg-[#0B0B0D] border-b border-[#2C2C2E] px-4 py-3 flex items-center justify-between">
@@ -305,7 +390,7 @@ module.exports = {
       </section>
 
       {/* Capabilities / Structure Section */}
-      <section id="features" className="border-t border-[#2C2C2E] py-20 px-6 max-w-5xl mx-auto space-y-12">
+      <section id="features" className="border-t border-[#2C2C2E] py-20 px-6 max-w-5xl mx-auto space-y-12 scroll-mt-16">
         <div className="space-y-2">
           <h2 className="text-xs font-mono uppercase text-[#A1A1A6] tracking-wider">Architecture</h2>
           <p className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#F5F5F7]">
@@ -337,8 +422,77 @@ module.exports = {
         </div>
       </section>
 
+      {/* Database Engines Section */}
+      <section id="engines" className="border-t border-[#2C2C2E] py-20 px-6 max-w-5xl mx-auto space-y-10 scroll-mt-16">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div className="space-y-2">
+            <h2 className="text-xs font-mono uppercase text-[#A1A1A6] tracking-wider">Dialects & Targets</h2>
+            <p className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#F5F5F7]">
+              Supported Database Engines
+            </p>
+            <p className="text-xs sm:text-sm text-[#A1A1A6] max-w-2xl leading-relaxed">
+              Design once on the visual canvas. SchemaForge transpiles your entities, foreign keys, indexes, and constraints into dialect-accurate DDL code for your target stack.
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-mono text-[#A1A1A6] bg-[#141416] border border-[#2C2C2E] px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+              100% Client-Side Transpilation
+            </span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {enginesList.map((engine) => (
+            <div
+              key={engine.id}
+              onClick={() => {
+                if (sampleCodeSnippets[engine.id]) {
+                  setActiveCodeTab(engine.id);
+                  document.getElementById("code")?.scrollIntoView({ behavior: "smooth" });
+                }
+              }}
+              className="group bg-[#141416] hover:bg-[#18181B] border border-[#2C2C2E] hover:border-[#3A3A3C] p-5 rounded-xl transition-all duration-200 flex flex-col justify-between cursor-pointer space-y-4"
+            >
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono uppercase tracking-wide font-semibold text-[#F5F5F7] flex items-center gap-2">
+                    <Database className="w-3.5 h-3.5 text-indigo-400" />
+                    {engine.name}
+                  </span>
+                  <span className="text-[10px] font-mono text-[#A1A1A6] bg-[#1C1C1F] border border-[#2C2C2E] px-2 py-0.5 rounded">
+                    {engine.badge}
+                  </span>
+                </div>
+                <p className="text-xs text-[#A1A1A6] leading-relaxed">
+                  {engine.description}
+                </p>
+                <div className="pt-1 flex flex-wrap gap-1.5">
+                  {engine.features.map((feat, idx) => (
+                    <span key={idx} className="text-[10px] font-mono text-[#6E6E73] group-hover:text-[#A1A1A6] bg-[#0B0B0D] px-2 py-0.5 rounded border border-[#2C2C2E] transition-colors">
+                      {feat}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="pt-2 border-t border-[#2C2C2E]/60 flex items-center justify-between text-[11px] font-mono text-indigo-400 group-hover:text-indigo-300">
+                <span>{engine.format}</span>
+                {sampleCodeSnippets[engine.id] ? (
+                  <span className="flex items-center gap-1">
+                    View Output <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                  </span>
+                ) : (
+                  <span className="text-[#6E6E73]">Standard AST</span>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Live Code Preview Section */}
-      <section id="code" className="border-t border-[#2C2C2E] py-20 px-6 max-w-5xl mx-auto space-y-8">
+      <section id="code" className="border-t border-[#2C2C2E] py-20 px-6 max-w-5xl mx-auto space-y-8 scroll-mt-16">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <h2 className="text-xs font-mono uppercase text-[#A1A1A6] tracking-wider">Generation</h2>
@@ -346,7 +500,7 @@ module.exports = {
           </div>
 
           <div className="flex items-center gap-1 bg-[#141416] p-1 rounded-lg border border-[#2C2C2E]">
-            {["mysql", "postgresql", "mongodb"].map((tab) => (
+            {["mysql", "postgresql", "mongodb", "sqlite", "sqlserver"].map((tab) => (
               <button
                 key={tab}
                 type="button"
@@ -357,7 +511,7 @@ module.exports = {
                     : "text-[#6E6E73] hover:text-[#A1A1A6]"
                 }`}
               >
-                {tab}
+                {tab === "sqlserver" ? "SQL Server" : tab}
               </button>
             ))}
           </div>
